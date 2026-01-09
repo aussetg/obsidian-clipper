@@ -3,7 +3,7 @@
 	"default_locale": "en",
 	"name": "Obsidian Vibe Clipper",
 	"homepage_url": "https://github.com/aussetg/obsidian-clipper",
-	"version": "0.13.0",
+	"version": "0.13.1",
 	"description": "Save content from the web to Obsidian, in a private and durable format you can always access offline. Vibe coded fork, you probably should use the original!",
 	"permissions": [
 		"activeTab",
@@ -14,11 +14,7 @@
 		"storage",
 		"scripting"
 	],
-	"host_permissions": [
-		"<all_urls>",
-		"http://*/*",
-		"https://*/*"
-	],
+	"host_permissions": ["<all_urls>", "http://*/*", "https://*/*"],
 	"action": {
 		"default_popup": "popup.html"
 	},
@@ -46,9 +42,15 @@
 	],
 	"web_accessible_resources": [
 		{
-			"resources": ["reader.css", "reader-script.js", "browser-polyfill.min.js", "style.css", "side-panel.html"],
+			"resources": [
+				"reader.css",
+				"reader-script.js",
+				"browser-polyfill.min.js",
+				"style.css",
+				"side-panel.html"
+			],
 			"extension_ids": ["*"],
-			"matches": [ "*://*/*" ]
+			"matches": ["*://*/*"]
 		}
 	],
 	"content_security_policy": {
