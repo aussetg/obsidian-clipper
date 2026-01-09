@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-clipper-vibe",
-	"version": "0.13.0",
+	"version": "0.13.1",
 	"description": "Unofficial web clipper for Obsidian (Vibe Coded Edition).",
 	"scripts": {
 		"defuddle-dev": "node scripts/set-defuddle-dev.js",
