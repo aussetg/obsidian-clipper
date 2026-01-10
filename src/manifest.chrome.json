@@ -47,7 +47,8 @@
 				"reader-script.js",
 				"browser-polyfill.min.js",
 				"style.css",
-				"side-panel.html"
+				"side-panel.html",
+				"pdf.worker.min.mjs"
 			],
 			"extension_ids": ["*"],
 			"matches": ["*://*/*"]

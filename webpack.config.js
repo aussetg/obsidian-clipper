@@ -88,7 +88,19 @@ module.exports = (env, argv) => {
 				})
 			],
 			moduleIds: 'named',
-			chunkIds: 'named'
+			chunkIds: 'named',
+			// Split PDF.js into its own chunk for lazy loading
+			splitChunks: {
+				chunks: 'async',
+				cacheGroups: {
+					pdfjs: {
+						test: /[\\/]node_modules[\\/]pdfjs-dist[\\/]/,
+						name: 'pdfjs',
+						chunks: 'async',
+						priority: 10
+					}
+				}
+			}
 		},
 		experiments: {
 			outputModule: false,
@@ -149,6 +161,7 @@ module.exports = (env, argv) => {
 					{ from: "src/settings.html", to: "settings.html" },
 					{ from: "src/icons", to: "icons" },
 					{ from: "node_modules/webextension-polyfill/dist/browser-polyfill.min.js", to: "browser-polyfill.min.js" },
+					{ from: "node_modules/pdfjs-dist/build/pdf.worker.min.mjs", to: "pdf.worker.min.mjs" },
 					{
 						from: 'src/_locales',
 						to: '_locales'
