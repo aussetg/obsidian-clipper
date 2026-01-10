@@ -287,6 +287,47 @@ function mapApiModelToCapabilities(
 }
 
 /**
+ * Try to find a model by exact match or by base name (without version suffix).
+ * For example, "gpt-5-nano-2025-08-07" would match "gpt-5-nano" in the registry.
+ */
+function findModelInProvider(
+	models: ModelsDevApiResponse[string]["models"],
+	modelId: string,
+): ModelsDevApiResponse[string]["models"][string] | null {
+	// Try exact match first
+	if (models[modelId]) {
+		return models[modelId];
+	}
+
+	// Try to match by stripping version suffix (e.g., "-2025-08-07", "-20250107")
+	// Common patterns: model-YYYY-MM-DD, model-YYYYMMDD, model-vX.Y.Z
+	const versionPatterns = [
+		/-\d{4}-\d{2}-\d{2}$/, // YYYY-MM-DD
+		/-\d{8}$/, // YYYYMMDD
+		/-v?\d+\.\d+(\.\d+)?$/, // vX.Y.Z or X.Y.Z
+		/-\d{4}\d{2}\d{2}$/, // YYYYMMDD without dash
+	];
+
+	for (const pattern of versionPatterns) {
+		const baseModelId = modelId.replace(pattern, '');
+		if (baseModelId !== modelId && models[baseModelId]) {
+			return models[baseModelId];
+		}
+	}
+
+	// Try prefix matching - find a model ID that the input starts with
+	// This handles cases like "gpt-5-nano-2025-08-07" matching "gpt-5-nano"
+	const sortedModelIds = Object.keys(models).sort((a, b) => b.length - a.length);
+	for (const registryModelId of sortedModelIds) {
+		if (modelId.startsWith(registryModelId + '-') || modelId === registryModelId) {
+			return models[registryModelId];
+		}
+	}
+
+	return null;
+}
+
+/**
  * Get model capabilities for a specific model
  */
 export function getModel(
@@ -303,7 +344,7 @@ export function getModel(
 		return null;
 	}
 
-	const model = provider.models[modelId];
+	const model = findModelInProvider(provider.models, modelId);
 	if (!model) {
 		return null;
 	}
@@ -592,6 +633,46 @@ export function getCachedData(): ModelsDevApiResponse | null {
 }
 
 /**
+ * Check if a model supports PDF input (for sending PDFs to vision-capable LLMs)
+ * 
+ * This checks the model's input modalities for 'pdf' support.
+ * If the model is not found in the registry, we return false to be safe.
+ * 
+ * @param providerId - The models.dev provider ID (e.g., "openai", "anthropic", "google")
+ * @param modelId - The model ID (e.g., "gpt-4o", "claude-sonnet-4-5", "gemini-2.0-flash")
+ * @returns true if the model supports PDF input, false otherwise
+ */
+export function supportsPdfInput(
+	providerId: string,
+	modelId: string,
+): boolean {
+	const model = getModel(providerId, modelId);
+	
+	// If we can't find the model, be conservative and don't send PDF
+	if (!model) {
+		debugLog("ModelRegistry", "Model not found, assuming no PDF support", {
+			providerId,
+			modelId,
+		});
+		return false;
+	}
+	
+	// Check if 'pdf' is explicitly in the input modalities
+	if (model.modalities.input.includes('pdf')) {
+		return true;
+	}
+	
+	// OpenAI models that support image input also support PDF input
+	// See: https://platform.openai.com/docs/guides/pdf-files
+	// This is a workaround until models.dev updates their data
+	if (providerId === 'openai' && model.modalities.input.includes('image')) {
+		return true;
+	}
+	
+	return false;
+}
+
+/**
  * Model capability hints for UI display
  */
 export interface ModelCapabilityHints {
@@ -622,14 +703,14 @@ export function getModelCapabilityHints(
 ): ModelCapabilityHints {
 	const model = getModel(providerId, modelId);
 
+	// Default values for unknown models
 	if (!model) {
-		// Return reasonable defaults for unknown models
 		return {
 			supportsTemperature: true,
 			supportsReasoning: false,
-			supportsToolCalls: true,
-			maxOutputTokens: DEFAULT_OUTPUT_LIMIT,
-			maxContextTokens: DEFAULT_CONTEXT_LIMIT,
+			supportsToolCalls: false,
+			maxOutputTokens: 4096,
+			maxContextTokens: 8192,
 			defaultTemperature: 0.7,
 		};
 	}
