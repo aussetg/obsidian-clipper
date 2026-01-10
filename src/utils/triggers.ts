@@ -1,6 +1,13 @@
 import { Template } from '../types/types';
 import { memoize, memoizeWithExpiration } from './memoize';
 
+/**
+ * Context about the current page for trigger matching.
+ */
+export interface PageContext {
+	isPdf: boolean;
+}
+
 // Modify the memoized function to handle regex patterns correctly
 const memoizedInternalMatchPattern = memoize(
 	(pattern: string, url: string, schemaOrgData: any): boolean => {
@@ -75,6 +82,7 @@ class Trie {
 const urlTrie = new Trie();
 const regexTriggers: Array<{ template: Template; regex: RegExp; priority: number }> = [];
 const schemaTriggers: Array<{ template: Template; pattern: string; priority: number }> = [];
+const typeTriggers: Array<{ template: Template; type: string; priority: number }> = [];
 
 let isInitialized = false;
 
@@ -82,6 +90,7 @@ export function initializeTriggers(templates: Template[]): void {
 	urlTrie.root = new TrieNode(); // Reset trie
 	regexTriggers.length = 0;
 	schemaTriggers.length = 0;
+	typeTriggers.length = 0;
 
 	templates.forEach((template, index) => {
 		if (template.triggers) {
@@ -91,6 +100,9 @@ export function initializeTriggers(templates: Template[]): void {
 					regexTriggers.push({ template, regex: new RegExp(trigger.slice(1, -1)), priority });
 				} else if (trigger.startsWith('schema:')) {
 					schemaTriggers.push({ template, pattern: trigger, priority });
+				} else if (trigger.startsWith('type:')) {
+					// Type triggers like "type:pdf"
+					typeTriggers.push({ template, type: trigger.slice(5), priority });
 				} else {
 					urlTrie.insert(trigger, template, priority);
 				}
@@ -102,15 +114,29 @@ export function initializeTriggers(templates: Template[]): void {
 }
 
 const memoizedFindMatchingTemplate = memoizeWithExpiration(
-	async (url: string, getSchemaOrgData: () => Promise<any>): Promise<Template | undefined> => {
+	async (
+		url: string, 
+		getSchemaOrgData: () => Promise<any>,
+		getPageContext?: () => Promise<PageContext>
+	): Promise<Template | undefined> => {
 		if (!isInitialized) {
 			console.warn('Triggers not initialized. Call initializeTriggers first.');
 			return undefined;
 		}
 
 		const schemaOrgData = await getSchemaOrgData();
+		const pageContext = getPageContext ? await getPageContext() : { isPdf: false };
 
-		// Check URL trie first
+		// Check type triggers first (most specific)
+		for (const { template, type } of typeTriggers) {
+			if (type === 'pdf' && pageContext.isPdf) {
+				console.log('Type trigger match found (pdf):', template);
+				return template;
+			}
+			// Add more type checks here as needed
+		}
+
+		// Check URL trie
 		const urlMatch = urlTrie.findLongestMatch(url, schemaOrgData);
 		if (urlMatch) {
 			return urlMatch.template;
@@ -135,7 +161,11 @@ const memoizedFindMatchingTemplate = memoizeWithExpiration(
 	},
 	{
 		expirationMs: 30000, // Cache for 30 seconds
-		keyFn: (url: string) => url // Use the full URL as the cache key
+		keyFn: async (url: string, _getSchemaOrgData: () => Promise<any>, getPageContext?: () => Promise<PageContext>) => {
+			// Include pageContext in cache key to differentiate PDF vs HTML views of same URL
+			const ctx = getPageContext ? await getPageContext() : { isPdf: false };
+			return `${url}:pdf=${ctx.isPdf}`;
+		}
 	}
 );
 

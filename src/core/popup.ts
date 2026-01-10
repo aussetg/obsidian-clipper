@@ -8,7 +8,7 @@ import type { PdfExtractionResult } from '../utils/pdf-extractor';
 import { compileTemplate } from '../utils/template-compiler';
 import { initializeIcons, getPropertyTypeIcon } from '../icons/icons';
 import { decompressFromUTF16 } from 'lz-string';
-import { findMatchingTemplate, initializeTriggers } from '../utils/triggers';
+import { findMatchingTemplate, initializeTriggers, PageContext } from '../utils/triggers';
 import { getLocalStorage, setLocalStorage, loadSettings, generalSettings, Settings } from '../utils/storage-utils';
 import { escapeHtml, unescapeValue } from '../utils/string-utils';
 import { loadTemplates, createDefaultTemplate } from '../managers/template-manager';
@@ -734,7 +734,11 @@ async function refreshFields(tabId: number, checkTemplateTriggers: boolean = tru
 					return extractedData.schemaOrgData;
 				};
 
-				const matchedTemplate = await findMatchingTemplate(currentUrl, getSchemaOrgData);
+				const getPageContext = async (): Promise<PageContext> => {
+					return { isPdf: pdfData?.isPdf ?? false };
+				};
+
+				const matchedTemplate = await findMatchingTemplate(currentUrl, getSchemaOrgData, getPageContext);
 				if (matchedTemplate) {
 					console.log('Matched template:', matchedTemplate);
 					currentTemplate = matchedTemplate;
