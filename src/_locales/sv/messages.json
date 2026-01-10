@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "Lägg till i befintlig anteckning, i slutet"
 	},
+	"attachments": {
+		"message": "Bilagor"
+	},
 	"autoRunInterpreter": {
 		"message": "Kör automatiskt"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "Extraherar PDF..."
 	},
 	"failedToCopyText": {
 		"message": "Det gick inte att kopiera texten"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "Klistra in JSON här"
 	},
+	"pdfCorrupted": {
+		"message": "Kan inte läsa denna PDF. Filen kan vara korrupt."
+	},
+	"pdfCorsBlocked": {
+		"message": "Kan inte komma åt denna PDF. Webbplatsen kan blockera extern åtkomst."
+	},
+	"pdfLoginRequired": {
+		"message": "Denna URL returnerade en HTML-sida. Du kan behöva logga in först."
+	},
+	"pdfPasswordProtected": {
+		"message": "Lösenordsskyddade PDF:er stöds inte."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "PDF-filen är för stor för att bifogas AI-modellen (gräns 25 MB)."
+	},
 	"pleaseReload": {
 		"message": "Försök att ladda om sidan."
 	},
@@ -834,6 +855,9 @@
 	},
 	"thinking": {
 		"message": "tänker"
+	},
+	"tokens": {
+		"message": "tokens"
 	},
 	"unknownProvider": {
 		"message": "Okänd leverantör"

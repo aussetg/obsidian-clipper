@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "Προσθήκη σε υπάρχουσα σημείωση, στο τέλος"
 	},
+	"attachments": {
+		"message": "Συνημμένα"
+	},
 	"autoRunInterpreter": {
 		"message": "Αυτόματη εκτέλεση"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "Εξαγωγή PDF..."
 	},
 	"failedToCopyText": {
 		"message": "Αποτυχία αντιγραφής κειμένου"
@@ -584,6 +590,21 @@
 	"pasteJsonHere": {
 		"message": "Επικολλήστε το JSON εδώ"
 	},
+	"pdfCorrupted": {
+		"message": "Δεν είναι δυνατή η ανάγνωση αυτού του PDF. Το αρχείο ενδέχεται να είναι κατεστραμμένο."
+	},
+	"pdfCorsBlocked": {
+		"message": "Δεν είναι δυνατή η πρόσβαση σε αυτό το PDF. Η ιστοσελίδα ενδέχεται να εμποδίζει την εξωτερική πρόσβαση."
+	},
+	"pdfLoginRequired": {
+		"message": "Αυτή η διεύθυνση επέστρεψε μια σελίδα HTML. Ίσως χρειαστεί να συνδεθείτε πρώτα."
+	},
+	"pdfPasswordProtected": {
+		"message": "Τα PDF με προστασία κωδικού πρόσβασης δεν υποστηρίζονται."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "Το PDF είναι πολύ μεγάλο για να προσαρτηθεί στο μοντέλο AI (όριο 25MB)."
+	},
 	"pleaseReload": {
 		"message": "Παρακαλώ δοκιμάστε να επαναφορτώσετε τη σελίδα."
 	},
@@ -826,6 +847,9 @@
 	},
 	"thinking": {
 		"message": "σκέφτεται"
+	},
+	"tokens": {
+		"message": "tokens"
 	},
 	"unknownProvider": {
 		"message": "Άγνωστος πάροχος"

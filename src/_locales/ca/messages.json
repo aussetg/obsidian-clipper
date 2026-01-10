@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "Agregar a una nota existent, al final"
 	},
+	"attachments": {
+		"message": "Adjunts"
+	},
 	"autoRunInterpreter": {
 		"message": "Executar automàticament"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "Extracció del PDF..."
 	},
 	"failedToCopyText": {
 		"message": "Error en copiar el text"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "Enganxi el JSON aquí"
 	},
+	"pdfCorrupted": {
+		"message": "No es pot llegir aquest PDF. El fitxer pot estar danyat."
+	},
+	"pdfCorsBlocked": {
+		"message": "No es pot accedir a aquest PDF. El lloc web pot estar bloquejant l'accés extern."
+	},
+	"pdfLoginRequired": {
+		"message": "Aquesta URL ha retornat una pàgina HTML. Pot ser que calgui iniciar sessió primer."
+	},
+	"pdfPasswordProtected": {
+		"message": "Els PDFs protegits amb contrasenya no són compatibles."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "El PDF és massa gran per adjuntar-lo al model d'IA (límit de 25 MB)."
+	},
 	"pleaseReload": {
 		"message": "Si us plau, intenti recarregar la pàgina."
 	},
@@ -834,6 +855,9 @@
 	},
 	"thinking": {
 		"message": "pensant"
+	},
+	"tokens": {
+		"message": "tokens"
 	},
 	"unknownProvider": {
 		"message": "Proveïdor desconegut"

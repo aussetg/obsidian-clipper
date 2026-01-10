@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "הוסף לפתק קיים, בסוף"
 	},
+	"attachments": {
+		"message": "קבצים מצורפים"
+	},
 	"autoRunInterpreter": {
 		"message": "הפעלה אוטומטית"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "מחלץ את ה-PDF..."
 	},
 	"failedToCopyText": {
 		"message": "נכשל בהעתקת טקסט"
@@ -584,6 +590,21 @@
 	"pasteJsonHere": {
 		"message": "הדבק JSON כאן"
 	},
+	"pdfCorrupted": {
+		"message": "לא ניתן לקרוא את ה-PDF הזה. הקובץ עלול להיות פגום."
+	},
+	"pdfCorsBlocked": {
+		"message": "לא ניתן לגשת ל-PDF הזה. האתר עשוי לחסום גישה חיצונית."
+	},
+	"pdfLoginRequired": {
+		"message": "כתובת URL זו החזירה דף HTML. ייתכן שתצטרך להיכנס תחילה."
+	},
+	"pdfPasswordProtected": {
+		"message": "קבצי PDF המוגנים בסיסמה אינם נתמכים."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "ה-PDF גדול מדי כדי לצרף למודל ה-AI (מגבלת 25MB)."
+	},
 	"pleaseReload": {
 		"message": "אנא נסה/י לטעון את העמוד מחדש."
 	},
@@ -826,6 +847,9 @@
 	},
 	"thinking": {
 		"message": "חושב"
+	},
+	"tokens": {
+		"message": "טוקנים"
 	},
 	"unknownProvider": {
 		"message": "ספק לא ידוע"

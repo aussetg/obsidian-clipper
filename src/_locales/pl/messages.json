@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "Zapisz na końcu istniejącej notatki"
 	},
+	"attachments": {
+		"message": "Załączniki"
+	},
 	"autoRunInterpreter": {
 		"message": "Uruchom automatycznie"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "Wyodrębnianie PDF..."
 	},
 	"failedToCopyText": {
 		"message": "Nie udało się skopiować tekstu"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "Wklej JSON tutaj"
 	},
+	"pdfCorrupted": {
+		"message": "Nie można odczytać tego pliku PDF. Plik może być uszkodzony."
+	},
+	"pdfCorsBlocked": {
+		"message": "Brak dostępu do tego pliku PDF. Witryna może blokować zewnętrzny dostęp."
+	},
+	"pdfLoginRequired": {
+		"message": "Ten URL zwrócił stronę HTML. Być może najpierw trzeba się zalogować."
+	},
+	"pdfPasswordProtected": {
+		"message": "Pliki PDF zabezpieczone hasłem nie są obsługiwane."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "PDF jest za duży, aby dołączyć go do modelu AI (limit 25 MB)."
+	},
 	"pleaseReload": {
 		"message": "Spróbuj odświeżyć stronę."
 	},
@@ -834,6 +855,9 @@
 	},
 	"thinking": {
 		"message": "analizowanie"
+	},
+	"tokens": {
+		"message": "tokeny"
 	},
 	"unknownProvider": {
 		"message": "Nieznany operator"

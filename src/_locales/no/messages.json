@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "Legg til i eksisterende notat, på slutten"
 	},
+	"attachments": {
+		"message": "Vedlegg"
+	},
 	"autoRunInterpreter": {
 		"message": "Kjør automatisk"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "Henter PDF..."
 	},
 	"failedToCopyText": {
 		"message": "Kunne ikke kopiere tekst"
@@ -584,6 +590,21 @@
 	"pasteJsonHere": {
 		"message": "Lim inn JSON her"
 	},
+	"pdfCorrupted": {
+		"message": "Kan ikke lese denne PDF-en. Filen kan være skadet."
+	},
+	"pdfCorsBlocked": {
+		"message": "Kan ikke få tilgang til denne PDF-en. Nettsiden kan blokkere ekstern tilgang."
+	},
+	"pdfLoginRequired": {
+		"message": "Denne URL-en returnerte en HTML-side. Du må kanskje logge inn først."
+	},
+	"pdfPasswordProtected": {
+		"message": "Passordbeskyttede PDF-er støttes ikke."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "PDF-en er for stor til å legges ved for AI-modellen (25 MB grense)."
+	},
 	"pleaseReload": {
 		"message": "Vennligst prøv å oppdatere siden."
 	},
@@ -826,6 +847,9 @@
 	},
 	"thinking": {
 		"message": "tenker"
+	},
+	"tokens": {
+		"message": "tokens"
 	},
 	"unknownProvider": {
 		"message": "Ukjent leverandør"

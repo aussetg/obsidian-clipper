@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "Toevoegen aan bestaande notitie, onderaan"
 	},
+	"attachments": {
+		"message": "Bijlagen"
+	},
 	"autoRunInterpreter": {
 		"message": "Automatisch uitvoeren"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "PDF wordt geëxtraheerd..."
 	},
 	"failedToCopyText": {
 		"message": "Tekst kopiëren mislukt"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "Plak JSON hier"
 	},
+	"pdfCorrupted": {
+		"message": "Kan deze PDF niet lezen. Het bestand kan beschadigd zijn."
+	},
+	"pdfCorsBlocked": {
+		"message": "Kan geen toegang krijgen tot deze PDF. De website blokkeert mogelijk externe toegang."
+	},
+	"pdfLoginRequired": {
+		"message": "Deze URL gaf een HTML-pagina terug. Mogelijk moet u eerst inloggen."
+	},
+	"pdfPasswordProtected": {
+		"message": "Wachtwoordbeveiligde PDF's worden niet ondersteund."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "PDF is te groot om aan het AI-model toe te voegen (limiet 25 MB)."
+	},
 	"pleaseReload": {
 		"message": "Probeer de pagina opnieuw te laden."
 	},
@@ -834,6 +855,9 @@
 	},
 	"thinking": {
 		"message": "nadenken"
+	},
+	"tokens": {
+		"message": "tokens"
 	},
 	"unknownProvider": {
 		"message": "Onbekende provider"

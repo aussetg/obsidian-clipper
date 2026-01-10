@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "Thêm vào ghi chú hiện có, ở cuối"
 	},
+	"attachments": {
+		"message": "Tệp đính kèm"
+	},
 	"autoRunInterpreter": {
 		"message": "Tự động chạy"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "Đang trích xuất PDF..."
 	},
 	"failedToCopyText": {
 		"message": "Không thể sao chép văn bản"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "Dán JSON vào đây"
 	},
+	"pdfCorrupted": {
+		"message": "Không thể đọc tệp PDF này. Tệp có thể đã bị hỏng."
+	},
+	"pdfCorsBlocked": {
+		"message": "Không thể truy cập PDF này. Trang web có thể đang chặn truy cập từ bên ngoài."
+	},
+	"pdfLoginRequired": {
+		"message": "URL này trả về một trang HTML. Có thể bạn cần đăng nhập trước."
+	},
+	"pdfPasswordProtected": {
+		"message": "Không hỗ trợ PDF được bảo vệ bằng mật khẩu."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "PDF quá lớn để đính kèm cho mô hình AI (giới hạn 25MB)."
+	},
 	"pleaseReload": {
 		"message": "Vui lòng thử tải lại trang."
 	},
@@ -834,6 +855,9 @@
 	},
 	"thinking": {
 		"message": "đang suy nghĩ"
+	},
+	"tokens": {
+		"message": "token"
 	},
 	"unknownProvider": {
 		"message": "Nhà cung cấp không xác định"

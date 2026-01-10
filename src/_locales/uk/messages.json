@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "Додати до існуючої нотатки, в кінець"
 	},
+	"attachments": {
+		"message": "Вкладення"
+	},
 	"autoRunInterpreter": {
 		"message": "Автозапуск"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "Витягується PDF..."
 	},
 	"failedToCopyText": {
 		"message": "Не вдалося скопіювати текст"
@@ -584,6 +590,21 @@
 	"pasteJsonHere": {
 		"message": "Вставте JSON тут"
 	},
+	"pdfCorrupted": {
+		"message": "Не вдається прочитати цей PDF. Файл може бути пошкоджений."
+	},
+	"pdfCorsBlocked": {
+		"message": "Не вдається отримати доступ до цього PDF. Сайт може блокувати зовнішній доступ."
+	},
+	"pdfLoginRequired": {
+		"message": "Ця URL-адреса повернула HTML-сторінку. Можливо, спочатку потрібно увійти."
+	},
+	"pdfPasswordProtected": {
+		"message": "PDF-файли, захищені паролем, не підтримуються."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "PDF занадто великий, щоб прикріпити до моделі ШІ (обмеження 25 МБ)."
+	},
 	"pleaseReload": {
 		"message": "Будь ласка, спробуйте перезавантажити сторінку."
 	},
@@ -826,6 +847,9 @@
 	},
 	"thinking": {
 		"message": "думає"
+	},
+	"tokens": {
+		"message": "токени"
 	},
 	"unknownProvider": {
 		"message": "Невідомий провайдер"

@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "Připojit k existující poznámce, na konec"
 	},
+	"attachments": {
+		"message": "Přílohy"
+	},
 	"autoRunInterpreter": {
 		"message": "Automatické spuštění"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "Extrahuji PDF..."
 	},
 	"failedToCopyText": {
 		"message": "Nepodařilo se zkopírovat text"
@@ -584,6 +590,21 @@
 	"pasteJsonHere": {
 		"message": "Vložte JSON sem"
 	},
+	"pdfCorrupted": {
+		"message": "Nelze přečíst tento PDF. Soubor může být poškozen."
+	},
+	"pdfCorsBlocked": {
+		"message": "Nelze získat přístup k tomuto PDF. Web může blokovat externí přístup."
+	},
+	"pdfLoginRequired": {
+		"message": "Tato URL adresa vrátila HTML stránku. Možná se musíte nejprve přihlásit."
+	},
+	"pdfPasswordProtected": {
+		"message": "PDF chráněné heslem nejsou podporovány."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "PDF je příliš velké pro přiložení k AI modelu (limit 25 MB)."
+	},
 	"pleaseReload": {
 		"message": "Zkuste prosím znovu načíst stránku."
 	},
@@ -826,6 +847,9 @@
 	},
 	"thinking": {
 		"message": "přemýšlím"
+	},
+	"tokens": {
+		"message": "tokeny"
 	},
 	"unknownProvider": {
 		"message": "Neznámý poskytovatel"

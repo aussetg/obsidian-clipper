@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "Ajouter à une note existante, à la fin"
 	},
+	"attachments": {
+		"message": "Pièces jointes"
+	},
 	"autoRunInterpreter": {
 		"message": "Exécuter automatiquement"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "Extraction du PDF..."
 	},
 	"failedToCopyText": {
 		"message": "Échec de la copie du texte"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "Collez le JSON ici"
 	},
+	"pdfCorrupted": {
+		"message": "Impossible de lire ce PDF. Le fichier peut être corrompu."
+	},
+	"pdfCorsBlocked": {
+		"message": "Impossible d'accéder à ce PDF. Le site web peut bloquer l'accès externe."
+	},
+	"pdfLoginRequired": {
+		"message": "Cette URL a renvoyé une page HTML. Il se peut que vous deviez vous connecter."
+	},
+	"pdfPasswordProtected": {
+		"message": "Les PDF protégés par mot de passe ne sont pas pris en charge."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "Le PDF est trop volumineux pour être joint au modèle d'IA (limite 25 Mo)."
+	},
 	"pleaseReload": {
 		"message": "Veuillez essayer de recharger la page."
 	},
@@ -834,6 +855,9 @@
 	},
 	"thinking": {
 		"message": "réflexion"
+	},
+	"tokens": {
+		"message": "jetons"
 	},
 	"unknownProvider": {
 		"message": "Fournisseur inconnu"

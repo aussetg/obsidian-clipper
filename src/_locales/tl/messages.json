@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "Idagdag sa umiiral na note, sa dulo"
 	},
+	"attachments": {
+		"message": "Mga kalakip"
+	},
 	"autoRunInterpreter": {
 		"message": "Awtomatikong patakbuhin"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "Kinukuha ang PDF..."
 	},
 	"failedToCopyText": {
 		"message": "Hindi makopya ang text"
@@ -584,6 +590,21 @@
 	"pasteJsonHere": {
 		"message": "I-paste ang JSON dito"
 	},
+	"pdfCorrupted": {
+		"message": "Hindi mabasa ang PDF na ito. Maaaring sira ang file."
+	},
+	"pdfCorsBlocked": {
+		"message": "Hindi ma-access ang PDF na ito. Maaaring hinaharangan ng website ang panlabas na pag-access."
+	},
+	"pdfLoginRequired": {
+		"message": "Ang URL na ito ay nagbalik ng HTML na pahina. Maaaring kailanganin mong mag-log in muna."
+	},
+	"pdfPasswordProtected": {
+		"message": "Hindi sinusuportahan ang mga PDF na may password."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "Masyadong malaki ang PDF para ilakip sa AI model (limit na 25MB)."
+	},
 	"pleaseReload": {
 		"message": "Paki-reload ang pahina."
 	},
@@ -826,6 +847,9 @@
 	},
 	"thinking": {
 		"message": "nag-iisip"
+	},
+	"tokens": {
+		"message": "mga token"
 	},
 	"unknownProvider": {
 		"message": "Hindi kilalang provider"

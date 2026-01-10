@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "একটি বিদ্যমান নোটের শেষে যোগ করুন"
 	},
+	"attachments": {
+		"message": "সংযুক্তি"
+	},
 	"autoRunInterpreter": {
 		"message": "স্বয়ংক্রিয়ভাবে চালান"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "PDF বের করা হচ্ছে..."
 	},
 	"failedToCopyText": {
 		"message": "টেক্সট কপি করতে ব্যর্থ হয়েছে"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "এখানে JSON পেস্ট করুন"
 	},
+	"pdfCorrupted": {
+		"message": "এই PDF পড়া যাচ্ছে না। ফাইলটি ক্ষতিগ্রস্ত হতে পারে।"
+	},
+	"pdfCorsBlocked": {
+		"message": "এই PDF-এ অ্যাক্সেস করা যাচ্ছে না। ওয়েবসাইটটি বাহ্যিক অ্যাক্সেস ব্লক করে থাকতে পারে।"
+	},
+	"pdfLoginRequired": {
+		"message": "এই URL একটি HTML পৃষ্ঠা ফিরিয়েছে। আগে লগ ইন করতে হতে পারে।"
+	},
+	"pdfPasswordProtected": {
+		"message": "পাসওয়ার্ড-রক্ষিত PDF সমর্থিত নয়।"
+	},
+	"pdfTooLargeForLlm": {
+		"message": "PDFটি AI মডেলে সংযুক্ত করার জন্য খুব বড় (সীমা: 25MB)।"
+	},
 	"pleaseReload": {
 		"message": "অনুগ্রহ করে পেজ রিলোড করার চেষ্টা করুন।"
 	},
@@ -834,6 +855,9 @@
 	},
 	"thinking": {
 		"message": "ভাবছে"
+	},
+	"tokens": {
+		"message": "টোকেন"
 	},
 	"unknownProvider": {
 		"message": "অজানা প্রোভাইডার"

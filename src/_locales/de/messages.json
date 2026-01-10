@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "Zum Ende einer bestehenden Notiz hinzufügen"
 	},
+	"attachments": {
+		"message": "Anhänge"
+	},
 	"autoRunInterpreter": {
 		"message": "Automatisch ausführen"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web-Clipper"
+	},
+	"extractingPdf": {
+		"message": "PDF wird extrahiert…"
 	},
 	"failedToCopyText": {
 		"message": "Text konnte nicht kopiert werden"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "Füge hier JSON ein"
 	},
+	"pdfCorrupted": {
+		"message": "Diese PDF kann nicht gelesen werden. Die Datei ist möglicherweise beschädigt."
+	},
+	"pdfCorsBlocked": {
+		"message": "Auf diese PDF kann nicht zugegriffen werden. Die Website blockiert möglicherweise externen Zugriff."
+	},
+	"pdfLoginRequired": {
+		"message": "Diese URL lieferte eine HTML-Seite. Möglicherweise müssen Sie sich zuerst anmelden."
+	},
+	"pdfPasswordProtected": {
+		"message": "Passwortgeschützte PDFs werden nicht unterstützt."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "Die PDF ist zu groß, um an das KI-Modell angehängt zu werden (25 MB Limit)."
+	},
 	"pleaseReload": {
 		"message": "Bitte versuche, die Seite neu zu laden."
 	},
@@ -834,6 +855,9 @@
 	},
 	"thinking": {
 		"message": "Denke nach"
+	},
+	"tokens": {
+		"message": "Tokens"
 	},
 	"unknownProvider": {
 		"message": "Unbekannter Anbieter"

@@ -2,7 +2,9 @@ import dayjs from 'dayjs';
 import { Template, Property, PromptVariable } from '../types/types';
 import { incrementStat, addHistoryEntry, getClipHistory } from '../utils/storage-utils';
 import { generateFrontmatter, saveToObsidian } from '../utils/obsidian-note-creator';
-import { extractPageContent, initializePageContent } from '../utils/content-extractor';
+import { extractPageContent, initializePageContent, PdfData } from '../utils/content-extractor';
+import { isPdfUrl, getPdfFilename } from '../utils/pdf-utils';
+import type { PdfExtractionResult } from '../utils/pdf-extractor';
 import { compileTemplate } from '../utils/template-compiler';
 import { initializeIcons, getPropertyTypeIcon } from '../icons/icons';
 import { decompressFromUTF16 } from 'lz-string';
@@ -661,6 +663,71 @@ async function refreshFields(tabId: number, checkTemplateTriggers: boolean = tru
 		if (extractedData) {
 			const currentUrl = tab.url;
 
+			// Check if this is a PDF and extract content if so
+			let pdfData: PdfData | undefined;
+			const pdfLoadingIndicator = document.getElementById('pdf-loading-indicator');
+			
+			if (isPdfUrl(currentUrl)) {
+				debugLog('PDF', 'Detected PDF URL, extracting content...');
+				
+				// Show loading indicator
+				if (pdfLoadingIndicator) {
+					pdfLoadingIndicator.style.display = 'flex';
+				}
+				
+				try {
+					const pdfResult = await browser.runtime.sendMessage({ 
+						action: 'extractPdf', 
+						url: currentUrl 
+					}) as PdfExtractionResult;
+					
+					if (pdfResult && pdfResult.success) {
+						pdfData = {
+							isPdf: true,
+							pdfUrl: currentUrl,
+							pdfContent: pdfResult.text,
+							pdfTitle: pdfResult.title || getPdfFilename(currentUrl),
+							pdfAuthor: pdfResult.author,
+							pdfPages: pdfResult.pages
+						};
+						
+						if (pdfResult.sizeWarning) {
+							console.warn('PDF size exceeds 10MB, performance may be affected');
+						}
+						debugLog('PDF', 'PDF extraction successful:', { 
+							pages: pdfResult.pages, 
+							textLength: pdfResult.text.length 
+						});
+					} else {
+						// Extraction failed, but we still know it's a PDF
+						pdfData = {
+							isPdf: true,
+							pdfUrl: currentUrl,
+							pdfContent: pdfResult?.text || '[PDF extraction failed]',
+							pdfTitle: getPdfFilename(currentUrl),
+							pdfAuthor: '',
+							pdfPages: 0
+						};
+						debugLog('PDF', 'PDF extraction failed:', pdfResult?.error);
+					}
+				} catch (error) {
+					console.error('Error extracting PDF:', error);
+					pdfData = {
+						isPdf: true,
+						pdfUrl: currentUrl,
+						pdfContent: `[PDF extraction failed: ${error instanceof Error ? error.message : 'Unknown error'}]`,
+						pdfTitle: getPdfFilename(currentUrl),
+						pdfAuthor: '',
+						pdfPages: 0
+					};
+				} finally {
+					// Hide loading indicator
+					if (pdfLoadingIndicator) {
+						pdfLoadingIndicator.style.display = 'none';
+					}
+				}
+			}
+
 			// Only check for the correct template if checkTemplateTriggers is true
 			if (checkTemplateTriggers) {
 				const getSchemaOrgData = async () => {
@@ -691,7 +758,8 @@ async function refreshFields(tabId: number, checkTemplateTriggers: boolean = tru
 				extractedData.published,
 				extractedData.site,
 				extractedData.wordCount,
-				extractedData.metaTags
+				extractedData.metaTags,
+				pdfData
 			);
 			if (initializedContent) {
 				currentVariables = initializedContent.currentVariables;

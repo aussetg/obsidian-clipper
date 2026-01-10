@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "Maujuda note mein, ant mein jodein"
 	},
+	"attachments": {
+		"message": "अनुलग्नक"
+	},
 	"autoRunInterpreter": {
 		"message": "Automatic chalayein"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "PDF निकाला जा रहा है..."
 	},
 	"failedToCopyText": {
 		"message": "Text copy karne mein fail"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "JSON yahan paste karein"
 	},
+	"pdfCorrupted": {
+		"message": "इस PDF को पढ़ा नहीं जा सका। फ़ाइल भ्रष्ट हो सकती है।"
+	},
+	"pdfCorsBlocked": {
+		"message": "इस PDF तक पहुँच नहीं हो रही है। वेबसाइट बाहरी पहुँच को रोक रही हो सकती है।"
+	},
+	"pdfLoginRequired": {
+		"message": "यह URL एक HTML पृष्ठ लौटा रहा है। संभवतः पहले आपको लॉग इन करना होगा।"
+	},
+	"pdfPasswordProtected": {
+		"message": "पासवर्ड-रक्षित PDF समर्थित नहीं हैं।"
+	},
+	"pdfTooLargeForLlm": {
+		"message": "PDF AI मॉडल से संलग्न करने के लिए बहुत बड़ा है (सीमा: 25MB)。"
+	},
 	"pleaseReload": {
 		"message": "Kripya page reload karne ki koshish karein."
 	},
@@ -834,6 +855,9 @@
 	},
 	"thinking": {
 		"message": "Soch raha hai"
+	},
+	"tokens": {
+		"message": "टोकन"
 	},
 	"unknownProvider": {
 		"message": "Unknown provider"

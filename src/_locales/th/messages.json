@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "เพิ่มไปยังบันทึกที่มีอยู่ ที่ท้าย"
 	},
+	"attachments": {
+		"message": "ไฟล์แนบ"
+	},
 	"autoRunInterpreter": {
 		"message": "เรียกใช้อัตโนมัติ"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "กำลังดึงข้อมูลจาก PDF..."
 	},
 	"failedToCopyText": {
 		"message": "ไม่สามารถคัดลอกข้อความ"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "วาง JSON ที่นี่"
 	},
+	"pdfCorrupted": {
+		"message": "ไม่สามารถอ่านไฟล์ PDF นี้ได้ ไฟล์อาจเสียหาย."
+	},
+	"pdfCorsBlocked": {
+		"message": "ไม่สามารถเข้าถึง PDF นี้ได้ เว็บไซต์อาจบล็อกการเข้าถึงจากภายนอก."
+	},
+	"pdfLoginRequired": {
+		"message": "URL นี้ส่งกลับหน้า HTML คุณอาจต้องลงชื่อเข้าใช้ก่อน."
+	},
+	"pdfPasswordProtected": {
+		"message": "ไม่รองรับ PDF ที่มีรหัสผ่าน."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "ไฟล์ PDF ใหญ่เกินกว่าที่จะแนบกับโมเดล AI (จำกัด 25MB)."
+	},
 	"pleaseReload": {
 		"message": "โปรดลองโหลดหน้าใหม่"
 	},
@@ -834,6 +855,9 @@
 	},
 	"thinking": {
 		"message": "กำลังคิด"
+	},
+	"tokens": {
+		"message": "โทเค็น"
 	},
 	"unknownProvider": {
 		"message": "ผู้ให้บริการที่ไม่รู้จัก"

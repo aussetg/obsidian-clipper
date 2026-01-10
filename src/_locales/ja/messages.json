@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "既存のノートの末尾に追加"
 	},
+	"attachments": {
+		"message": "添付ファイル"
+	},
 	"autoRunInterpreter": {
 		"message": "自動実行"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "PDFを抽出しています..."
 	},
 	"failedToCopyText": {
 		"message": "テキストのコピーに失敗しました"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "ここにJSONを貼り付けてください"
 	},
+	"pdfCorrupted": {
+		"message": "このPDFを読み取れませんでした。ファイルが破損している可能性があります。"
+	},
+	"pdfCorsBlocked": {
+		"message": "このPDFにアクセスできません。ウェブサイトが外部アクセスをブロックしている可能性があります。"
+	},
+	"pdfLoginRequired": {
+		"message": "このURLはHTMLページを返しました。先にログインが必要な場合があります。"
+	},
+	"pdfPasswordProtected": {
+		"message": "パスワード保護されたPDFはサポートされていません。"
+	},
+	"pdfTooLargeForLlm": {
+		"message": "PDFはAIモデルに添付するには大きすぎます（25MB制限）。"
+	},
 	"pleaseReload": {
 		"message": "ページの再読み込みをお試しください。"
 	},
@@ -834,6 +855,9 @@
 	},
 	"thinking": {
 		"message": "考え中"
+	},
+	"tokens": {
+		"message": "トークン"
 	},
 	"unknownProvider": {
 		"message": "不明なプロバイダー"

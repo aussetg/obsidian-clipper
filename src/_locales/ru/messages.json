@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "Добавлять в конец существующей заметки"
 	},
+	"attachments": {
+		"message": "Вложения"
+	},
 	"autoRunInterpreter": {
 		"message": "Автоматический запуск"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "Извлечение PDF..."
 	},
 	"failedToCopyText": {
 		"message": "Не удалось скопировать текст"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "Вставьте JSON здесь"
 	},
+	"pdfCorrupted": {
+		"message": "Не удалось прочитать этот PDF. Файл может быть повреждён."
+	},
+	"pdfCorsBlocked": {
+		"message": "Не удаётся получить доступ к этому PDF. Веб-сайт может блокировать внешний доступ."
+	},
+	"pdfLoginRequired": {
+		"message": "По этому URL возвращается HTML-страница. Возможно, нужно сначала войти."
+	},
+	"pdfPasswordProtected": {
+		"message": "PDF-файлы, защищённые паролем, не поддерживаются."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "PDF слишком большой для прикрепления к модели ИИ (ограничение 25 МБ)."
+	},
 	"pleaseReload": {
 		"message": "Пожалуйста, попробуйте перезагрузить страницу."
 	},
@@ -834,6 +855,9 @@
 	},
 	"thinking": {
 		"message": "думаю"
+	},
+	"tokens": {
+		"message": "токены"
 	},
 	"unknownProvider": {
 		"message": "Неизвестный провайдер"

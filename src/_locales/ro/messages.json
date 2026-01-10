@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "Adaugă la nota existentă, la sfârșit"
 	},
+	"attachments": {
+		"message": "Atașamente"
+	},
 	"autoRunInterpreter": {
 		"message": "Rulare automată"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "Se extrage PDF..."
 	},
 	"failedToCopyText": {
 		"message": "Nu s-a putut copia textul"
@@ -584,6 +590,21 @@
 	"pasteJsonHere": {
 		"message": "Lipește JSON aici"
 	},
+	"pdfCorrupted": {
+		"message": "Nu se poate citi acest PDF. Fișierul poate fi corupt."
+	},
+	"pdfCorsBlocked": {
+		"message": "Nu se poate accesa acest PDF. Site-ul web poate bloca accesul extern."
+	},
+	"pdfLoginRequired": {
+		"message": "Această adresă URL a returnat o pagină HTML. Este posibil să fie nevoie să vă conectați mai întâi."
+	},
+	"pdfPasswordProtected": {
+		"message": "PDF-urile protejate prin parolă nu sunt acceptate."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "PDF-ul este prea mare pentru a fi atașat modelului AI (limită 25MB)."
+	},
 	"pleaseReload": {
 		"message": "Te rugăm să reîncarci pagina."
 	},
@@ -826,6 +847,9 @@
 	},
 	"thinking": {
 		"message": "se gândește"
+	},
+	"tokens": {
+		"message": "tokeni"
 	},
 	"unknownProvider": {
 		"message": "Furnizor necunoscut"

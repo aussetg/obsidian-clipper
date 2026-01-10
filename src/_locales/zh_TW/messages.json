@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "新增到現有筆記底部"
 	},
+	"attachments": {
+		"message": "附件"
+	},
 	"autoRunInterpreter": {
 		"message": "自動運行"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian 網頁擷取器"
+	},
+	"extractingPdf": {
+		"message": "正在擷取 PDF…"
 	},
 	"failedToCopyText": {
 		"message": "複製文字失敗"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "在此貼上 JSON"
 	},
+	"pdfCorrupted": {
+		"message": "無法讀取此 PDF。檔案可能已損毀。"
+	},
+	"pdfCorsBlocked": {
+		"message": "無法存取此 PDF。網站可能阻擋了外部存取。"
+	},
+	"pdfLoginRequired": {
+		"message": "此 URL 回傳了 HTML 頁面。您可能需要先登入。"
+	},
+	"pdfPasswordProtected": {
+		"message": "不支援受密碼保護的 PDF。"
+	},
+	"pdfTooLargeForLlm": {
+		"message": "PDF 檔案過大，無法附加至 AI 模型（上限 25MB）。"
+	},
 	"pleaseReload": {
 		"message": "請嘗試重新載入頁面。"
 	},
@@ -834,6 +855,9 @@
 	},
 	"thinking": {
 		"message": "思考中"
+	},
+	"tokens": {
+		"message": "詞元"
 	},
 	"unknownProvider": {
 		"message": "未知的提供者"

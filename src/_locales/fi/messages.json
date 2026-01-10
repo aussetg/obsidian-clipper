@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "Lisää olemassa olevaan muistiinpanoon, loppuun"
 	},
+	"attachments": {
+		"message": "Liitteet"
+	},
 	"autoRunInterpreter": {
 		"message": "Suorita automaattisesti"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "Puretaan PDF-tiedostoa..."
 	},
 	"failedToCopyText": {
 		"message": "Tekstin kopiointi epäonnistui"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "Liitä JSON tähän"
 	},
+	"pdfCorrupted": {
+		"message": "Tätä PDF-tiedostoa ei voi lukea. Tiedosto saattaa olla vioittunut."
+	},
+	"pdfCorsBlocked": {
+		"message": "Ei pääsyä tähän PDF:ään. Sivusto saattaa estää ulkoisen pääsyn."
+	},
+	"pdfLoginRequired": {
+		"message": "Tämä URL palautti HTML-sivun. Saatat joutua kirjautumaan sisään ensin."
+	},
+	"pdfPasswordProtected": {
+		"message": "Salasanasuojattuja PDF-tiedostoja ei tueta."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "PDF on liian suuri liitettäväksi tekoälymalliin (25 MB:n raja)."
+	},
 	"pleaseReload": {
 		"message": "Yritä ladata sivu uudelleen."
 	},
@@ -842,6 +863,9 @@
 	},
 	"thinking": {
 		"message": "ajattelee"
+	},
+	"tokens": {
+		"message": "tokenit"
 	},
 	"unknownProvider": {
 		"message": "Tuntematon palveluntarjoaja"

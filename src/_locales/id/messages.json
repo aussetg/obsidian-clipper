@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "Tambah ke catatan yang telah ada, di bagian akhir"
 	},
+	"attachments": {
+		"message": "Lampiran"
+	},
 	"autoRunInterpreter": {
 		"message": "Jalankan secara otomatis"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "Mengekstrak PDF..."
 	},
 	"failedToCopyText": {
 		"message": "Gagal menyalin teks"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "Tempel JSON di sini"
 	},
+	"pdfCorrupted": {
+		"message": "Tidak dapat membaca PDF ini. Berkas mungkin rusak."
+	},
+	"pdfCorsBlocked": {
+		"message": "Tidak dapat mengakses PDF ini. Situs web mungkin memblokir akses eksternal."
+	},
+	"pdfLoginRequired": {
+		"message": "URL ini mengembalikan halaman HTML. Anda mungkin perlu masuk terlebih dahulu."
+	},
+	"pdfPasswordProtected": {
+		"message": "PDF yang dilindungi kata sandi tidak didukung."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "PDF terlalu besar untuk dilampirkan ke model AI (batas 25MB)."
+	},
 	"pleaseReload": {
 		"message": "Silakan coba muat ulang laman web."
 	},
@@ -834,6 +855,9 @@
 	},
 	"thinking": {
 		"message": "berpikir"
+	},
+	"tokens": {
+		"message": "token"
 	},
 	"unknownProvider": {
 		"message": "Penyedia tidak dikenal"

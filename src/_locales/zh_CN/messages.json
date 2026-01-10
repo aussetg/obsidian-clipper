@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "添加到现有笔记末尾"
 	},
+	"attachments": {
+		"message": "附件"
+	},
 	"autoRunInterpreter": {
 		"message": "自动运行"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian 网页剪藏器"
+	},
+	"extractingPdf": {
+		"message": "正在提取 PDF…"
 	},
 	"failedToCopyText": {
 		"message": "复制文本失败"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "在此处粘贴 JSON"
 	},
+	"pdfCorrupted": {
+		"message": "无法读取此 PDF。文件可能已损坏。"
+	},
+	"pdfCorsBlocked": {
+		"message": "无法访问此 PDF。该网站可能阻止了外部访问。"
+	},
+	"pdfLoginRequired": {
+		"message": "此 URL 返回了一个 HTML 页面。您可能需要先登录。"
+	},
+	"pdfPasswordProtected": {
+		"message": "不支持受密码保护的 PDF。"
+	},
+	"pdfTooLargeForLlm": {
+		"message": "PDF 太大，无法附加到 AI 模型（限制 25MB）。"
+	},
 	"pleaseReload": {
 		"message": "请尝试重新加载页面。"
 	},
@@ -834,6 +855,9 @@
 	},
 	"thinking": {
 		"message": "思考中"
+	},
+	"tokens": {
+		"message": "令牌"
 	},
 	"unknownProvider": {
 		"message": "未知的提供商"

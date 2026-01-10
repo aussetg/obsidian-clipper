@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "Mevcut nota, sona ekle"
 	},
+	"attachments": {
+		"message": "Ekler"
+	},
 	"autoRunInterpreter": {
 		"message": "Otomatik çalıştır"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Kırpıcı"
+	},
+	"extractingPdf": {
+		"message": "PDF çıkarılıyor..."
 	},
 	"failedToCopyText": {
 		"message": "Metin kopyalanamadı"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "JSON'u buraya yapıştırın"
 	},
+	"pdfCorrupted": {
+		"message": "Bu PDF okunamıyor. Dosya bozuk olabilir."
+	},
+	"pdfCorsBlocked": {
+		"message": "Bu PDF'e erişilemiyor. Web sitesi dış erişimi engelliyor olabilir."
+	},
+	"pdfLoginRequired": {
+		"message": "Bu URL bir HTML sayfası döndürdü. Önce giriş yapmanız gerekebilir."
+	},
+	"pdfPasswordProtected": {
+		"message": "Parola korumalı PDF'ler desteklenmiyor."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "PDF, yapay zeka modeline eklemek için çok büyük (25MB sınırı)."
+	},
 	"pleaseReload": {
 		"message": "Lütfen sayfayı yeniden yüklemeyi deneyin."
 	},
@@ -834,6 +855,9 @@
 	},
 	"thinking": {
 		"message": "Düşünüyor"
+	},
+	"tokens": {
+		"message": "tokenler"
 	},
 	"unknownProvider": {
 		"message": "Bilinmeyen sağlayıcı"

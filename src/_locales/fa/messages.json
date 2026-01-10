@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "اضافه کردن به یادداشت موجود، در آخر آن"
 	},
+	"attachments": {
+		"message": "پیوست‌ها"
+	},
 	"autoRunInterpreter": {
 		"message": "اجرای خودکار"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "Obsidian Web Clipper"
+	},
+	"extractingPdf": {
+		"message": "در حال استخراج PDF..."
 	},
 	"failedToCopyText": {
 		"message": "متن کپی نشد"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "JSON را اینجا بچسبانید"
 	},
+	"pdfCorrupted": {
+		"message": "قابل خواندن این PDF نیست. ممکن است فایل خراب باشد."
+	},
+	"pdfCorsBlocked": {
+		"message": "قادر به دسترسی به این PDF نیستیم. ممکن است وب‌سایت دسترسی خارجی را مسدود کرده باشد."
+	},
+	"pdfLoginRequired": {
+		"message": "این آدرس یک صفحه HTML بازگردانده است. ممکن است ابتدا باید وارد شوید."
+	},
+	"pdfPasswordProtected": {
+		"message": "PDFهای دارای رمز عبور پشتیبانی نمی‌شوند."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "حجم PDF برای پیوست به مدل هوش مصنوعی بیش از حد است (حداکثر 25 مگابایت)."
+	},
 	"pleaseReload": {
 		"message": "لطفاً صفحه را دوباره بارگیری کنید."
 	},
@@ -834,6 +855,9 @@
 	},
 	"thinking": {
 		"message": "در حال فکر کردن"
+	},
+	"tokens": {
+		"message": "توکن‌ها"
 	},
 	"unknownProvider": {
 		"message": "ارائه دهنده ناشناخته"

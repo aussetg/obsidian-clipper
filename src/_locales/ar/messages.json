@@ -53,6 +53,9 @@
 	"appendToExisting": {
 		"message": "إضافة إلى ملاحظة موجودة، في النهاية"
 	},
+	"attachments": {
+		"message": "مرفقات"
+	},
 	"autoRunInterpreter": {
 		"message": "تشغيل تلقائي"
 	},
@@ -273,6 +276,9 @@
 	},
 	"extensionName": {
 		"message": "قاصّ أوبسيديان للويب"
+	},
+	"extractingPdf": {
+		"message": "جارٍ استخراج PDF..."
 	},
 	"failedToCopyText": {
 		"message": "فشل نسخ النص"
@@ -592,6 +598,21 @@
 	"pasteJsonHere": {
 		"message": "الصق JSON هنا"
 	},
+	"pdfCorrupted": {
+		"message": "تعذر قراءة ملف PDF هذا. قد يكون الملف تالفًا."
+	},
+	"pdfCorsBlocked": {
+		"message": "تعذر الوصول إلى هذا PDF. قد يكون الموقع يمنع الوصول الخارجي."
+	},
+	"pdfLoginRequired": {
+		"message": "أعاد هذا العنوان صفحة HTML. قد تحتاج إلى تسجيل الدخول أولاً."
+	},
+	"pdfPasswordProtected": {
+		"message": "ملفات PDF المحمية بكلمة مرور غير مدعومة."
+	},
+	"pdfTooLargeForLlm": {
+		"message": "ملف PDF كبير جدًا بحيث لا يمكن إرفاقه بالنموذج (الحد 25 ميغابايت)."
+	},
 	"pleaseReload": {
 		"message": "يرجى محاولة إعادة تحميل الصفحة."
 	},
@@ -834,6 +855,9 @@
 	},
 	"thinking": {
 		"message": "يفكر"
+	},
+	"tokens": {
+		"message": "توكنات"
 	},
 	"unknownProvider": {
 		"message": "مزود غير معروف"
