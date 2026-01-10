@@ -170,6 +170,13 @@ declare global {
 		site: string;
 		wordCount: number;
 		metaTags: { name?: string | null; property?: string | null; content: string | null }[];
+		// PDF-specific fields
+		isPdf: boolean;
+		pdfUrl?: string;
+		pdfContent?: string;
+		pdfTitle?: string;
+		pdfAuthor?: string;
+		pdfPages?: number;
 	}
 
 	browser.runtime.onMessage.addListener((request: any, sender, sendResponse) => {
@@ -308,7 +315,9 @@ declare global {
 				site: defuddled.site,
 				title: defuddled.title,
 				wordCount: defuddled.wordCount,
-				metaTags: defuddled.metaTags || []
+				metaTags: defuddled.metaTags || [],
+				// PDF fields are populated later in the extraction flow
+				isPdf: false
 			};
 			sendResponse(response);
 		} else if (request.action === "extractContent") {

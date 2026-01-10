@@ -56,6 +56,13 @@ interface ContentResponse {
 	site: string;
 	wordCount: number;
 	metaTags: { name?: string | null; property?: string | null; content: string | null }[];
+	// PDF-specific fields
+	isPdf: boolean;
+	pdfUrl?: string;
+	pdfContent?: string;
+	pdfTitle?: string;
+	pdfAuthor?: string;
+	pdfPages?: number;
 }
 
 export async function extractPageContent(tabId: number): Promise<ContentResponse | null> {
@@ -96,6 +103,15 @@ export async function extractPageContent(tabId: number): Promise<ContentResponse
 	}
 }
 
+export interface PdfData {
+	isPdf: boolean;
+	pdfUrl?: string;
+	pdfContent?: string;
+	pdfTitle?: string;
+	pdfAuthor?: string;
+	pdfPages?: number;
+}
+
 export async function initializePageContent(
 	content: string,
 	selectedHtml: string,
@@ -112,7 +128,8 @@ export async function initializePageContent(
 	published: string,
 	site: string,
 	wordCount: number,
-	metaTags: { name?: string | null; property?: string | null; content: string | null }[]
+	metaTags: { name?: string | null; property?: string | null; content: string | null }[],
+	pdfData?: PdfData
 ) {
 	try {
 		currentUrl = currentUrl.replace(/#:~:text=[^&]+(&|$)/, '');
@@ -150,10 +167,25 @@ export async function initializePageContent(
 			return highlightData;
 		});
 
+		// Determine if this is a PDF and get PDF-specific values
+		const isPdf = pdfData?.isPdf ?? false;
+		const pdfContent = pdfData?.pdfContent ?? '';
+		const pdfTitle = pdfData?.pdfTitle ?? '';
+		const pdfAuthor = pdfData?.pdfAuthor ?? '';
+		const pdfPages = pdfData?.pdfPages ?? 0;
+		const pdfUrl = pdfData?.pdfUrl ?? '';
+
+		// For PDFs, use PDF content for existing variables (backward compatibility)
+		const effectiveContent = isPdf ? pdfContent : markdownBody.trim();
+		const effectiveFullHtml = isPdf ? pdfContent : fullHtml.trim();
+		const effectiveTitle = isPdf && pdfTitle ? pdfTitle : title.trim();
+		const effectiveAuthor = isPdf && pdfAuthor ? pdfAuthor : author.trim();
+		const effectiveWordCount = isPdf ? pdfContent.split(/\s+/).filter(w => w.length > 0).length : wordCount;
+
 		const currentVariables: { [key: string]: string } = {
-			'{{author}}': author.trim(),
-			'{{content}}': markdownBody.trim(),
-			'{{contentHtml}}': content.trim(),
+			'{{author}}': effectiveAuthor,
+			'{{content}}': effectiveContent,
+			'{{contentHtml}}': isPdf ? '' : content.trim(), // Empty for PDFs (text only)
 			'{{selection}}': selectedMarkdown.trim(),
 			'{{selectionHtml}}': selectedHtml.trim(),
 			'{{date}}': dayjs().format('YYYY-MM-DDTHH:mm:ssZ').trim(),
@@ -161,15 +193,22 @@ export async function initializePageContent(
 			'{{description}}': description.trim(),
 			'{{domain}}': getDomain(currentUrl),
 			'{{favicon}}': favicon,
-			'{{fullHtml}}': fullHtml.trim(),
+			'{{fullHtml}}': effectiveFullHtml,
 			'{{highlights}}': highlights.length > 0 ? JSON.stringify(highlightsData) : '',
 			'{{image}}': image,
-			'{{noteName}}': noteName.trim(),
+			'{{noteName}}': sanitizeFileName(effectiveTitle),
 			'{{published}}': published.split(',')[0].trim(),
 			'{{site}}': site.trim(),
-			'{{title}}': title.trim(),
+			'{{title}}': effectiveTitle,
 			'{{url}}': currentUrl.trim(),
-			'{{words}}': wordCount.toString(),
+			'{{words}}': effectiveWordCount.toString(),
+			// PDF-specific variables
+			'{{isPdf}}': isPdf ? 'true' : 'false',
+			'{{pdfUrl}}': pdfUrl,
+			'{{pdfContent}}': pdfContent,
+			'{{pdfTitle}}': pdfTitle,
+			'{{pdfAuthor}}': pdfAuthor,
+			'{{pdfPages}}': pdfPages.toString(),
 		};
 
 		// Add extracted content to variables
