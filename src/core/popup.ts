@@ -659,74 +659,107 @@ async function refreshFields(tabId: number, checkTemplateTriggers: boolean = tru
 			return;
 		}
 
-		const extractedData = await memoizedExtractPageContent(tabId);
-		if (extractedData) {
-			const currentUrl = tab.url;
-
-			// Check if this is a PDF and extract content if so
-			let pdfData: PdfData | undefined;
-			const pdfLoadingIndicator = document.getElementById('pdf-loading-indicator');
+		const currentUrl = tab.url;
+		const pdfLoadingIndicator = document.getElementById('pdf-loading-indicator');
+		
+		// Check if this is a PDF BEFORE trying to extract page content
+		// PDFs need special handling because content scripts can't be injected into PDF viewers
+		let pdfData: PdfData | undefined;
+		let extractedData: Awaited<ReturnType<typeof memoizedExtractPageContent>> | null = null;
+		
+		if (isPdfUrl(currentUrl)) {
+			debugLog('PDF', 'Detected PDF URL, extracting content via background script...');
 			
-			if (isPdfUrl(currentUrl)) {
-				debugLog('PDF', 'Detected PDF URL, extracting content...');
+			// Show loading indicator
+			if (pdfLoadingIndicator) {
+				pdfLoadingIndicator.style.display = 'flex';
+			}
+			
+			try {
+				const pdfResult = await browser.runtime.sendMessage({ 
+					action: 'extractPdf', 
+					url: currentUrl 
+				}) as PdfExtractionResult;
 				
-				// Show loading indicator
-				if (pdfLoadingIndicator) {
-					pdfLoadingIndicator.style.display = 'flex';
-				}
-				
-				try {
-					const pdfResult = await browser.runtime.sendMessage({ 
-						action: 'extractPdf', 
-						url: currentUrl 
-					}) as PdfExtractionResult;
-					
-					if (pdfResult && pdfResult.success) {
-						pdfData = {
-							isPdf: true,
-							pdfUrl: currentUrl,
-							pdfContent: pdfResult.text,
-							pdfTitle: pdfResult.title || getPdfFilename(currentUrl),
-							pdfAuthor: pdfResult.author,
-							pdfPages: pdfResult.pages
-						};
-						
-						if (pdfResult.sizeWarning) {
-							console.warn('PDF size exceeds 10MB, performance may be affected');
-						}
-						debugLog('PDF', 'PDF extraction successful:', { 
-							pages: pdfResult.pages, 
-							textLength: pdfResult.text.length 
-						});
-					} else {
-						// Extraction failed, but we still know it's a PDF
-						pdfData = {
-							isPdf: true,
-							pdfUrl: currentUrl,
-							pdfContent: pdfResult?.text || '[PDF extraction failed]',
-							pdfTitle: getPdfFilename(currentUrl),
-							pdfAuthor: '',
-							pdfPages: 0
-						};
-						debugLog('PDF', 'PDF extraction failed:', pdfResult?.error);
-					}
-				} catch (error) {
-					console.error('Error extracting PDF:', error);
+				if (pdfResult && pdfResult.success) {
 					pdfData = {
 						isPdf: true,
 						pdfUrl: currentUrl,
-						pdfContent: `[PDF extraction failed: ${error instanceof Error ? error.message : 'Unknown error'}]`,
+						pdfContent: pdfResult.text,
+						pdfTitle: pdfResult.title || getPdfFilename(currentUrl),
+						pdfAuthor: pdfResult.author,
+						pdfPages: pdfResult.pages
+					};
+					
+					if (pdfResult.sizeWarning) {
+						console.warn('PDF size exceeds 10MB, performance may be affected');
+					}
+					debugLog('PDF', 'PDF extraction successful:', { 
+						pages: pdfResult.pages, 
+						textLength: pdfResult.text.length 
+					});
+				} else {
+					// Extraction failed, but we still know it's a PDF
+					pdfData = {
+						isPdf: true,
+						pdfUrl: currentUrl,
+						pdfContent: pdfResult?.text || '[PDF extraction failed]',
 						pdfTitle: getPdfFilename(currentUrl),
 						pdfAuthor: '',
 						pdfPages: 0
 					};
-				} finally {
-					// Hide loading indicator
-					if (pdfLoadingIndicator) {
-						pdfLoadingIndicator.style.display = 'none';
-					}
+					debugLog('PDF', 'PDF extraction failed:', pdfResult?.error);
+				}
+			} catch (error) {
+				console.error('Error extracting PDF:', error);
+				pdfData = {
+					isPdf: true,
+					pdfUrl: currentUrl,
+					pdfContent: `[PDF extraction failed: ${error instanceof Error ? error.message : 'Unknown error'}]`,
+					pdfTitle: getPdfFilename(currentUrl),
+					pdfAuthor: '',
+					pdfPages: 0
+				};
+			} finally {
+				// Hide loading indicator
+				if (pdfLoadingIndicator) {
+					pdfLoadingIndicator.style.display = 'none';
 				}
 			}
+			
+			// For PDFs, create a minimal extractedData object since content scripts can't access PDF viewers
+			// This provides the necessary structure for initializePageContent
+			extractedData = {
+				content: pdfData.pdfContent || '',
+				selectedHtml: '',
+				extractedContent: {},
+				schemaOrgData: null,
+				fullHtml: '',
+				highlights: [],
+				title: pdfData.pdfTitle || getPdfFilename(currentUrl),
+				author: pdfData.pdfAuthor || '',
+				description: '',
+				domain: new URL(currentUrl).hostname,
+				favicon: '',
+				image: '',
+				parseTime: 0,
+				published: '',
+				site: '',
+				wordCount: pdfData.pdfContent ? pdfData.pdfContent.split(/\s+/).filter(w => w.length > 0).length : 0,
+				metaTags: [],
+				isPdf: true,
+				pdfUrl: currentUrl,
+				pdfContent: pdfData.pdfContent,
+				pdfTitle: pdfData.pdfTitle,
+				pdfAuthor: pdfData.pdfAuthor,
+				pdfPages: pdfData.pdfPages
+			};
+		} else {
+			// Not a PDF - extract page content normally via content script
+			extractedData = await memoizedExtractPageContent(tabId);
+		}
+		
+		if (extractedData) {
 
 			// Only check for the correct template if checkTemplateTriggers is true
 			if (checkTemplateTriggers) {
@@ -773,7 +806,8 @@ async function refreshFields(tabId: number, checkTemplateTriggers: boolean = tru
 					currentTemplate,
 					initializedContent.currentVariables,
 					initializedContent.noteName,
-					extractedData.schemaOrgData
+					extractedData.schemaOrgData,
+					pdfData?.pdfUrl
 				);
 				setupMetadataToggle();
 
@@ -814,7 +848,7 @@ function populateTemplateDropdown() {
 	}
 }
 
-async function initializeTemplateFields(currentTabId: number, template: Template | null, variables: { [key: string]: string }, noteName?: string, schemaOrgData?: any) {
+async function initializeTemplateFields(currentTabId: number, template: Template | null, variables: { [key: string]: string }, noteName?: string, schemaOrgData?: any, pdfUrl?: string) {
 	if (!template) {
 		logError('No template selected');
 		return;
@@ -972,7 +1006,7 @@ async function initializeTemplateFields(currentTabId: number, template: Template
 
 	if (template) {
 		if (generalSettings.interpreterEnabled) {
-			await initializeInterpreter(template, variables, currentTabId!, currentTabId ? await getTabInfo(currentTabId).then(tab => tab.url || '') : '');
+			await initializeInterpreter(template, variables, currentTabId!, currentTabId ? await getTabInfo(currentTabId).then(tab => tab.url || '') : '', pdfUrl);
 
 			// Check if there are any prompt variables
 			const promptVariables = collectPromptVariables(template);
@@ -987,7 +1021,7 @@ async function initializeTemplateFields(currentTabId: number, template: Template
 					if (!modelConfig) {
 						throw new Error(`Model configuration not found for ${selectedModelId}`);
 					}
-					await handleInterpreterUI(template, variables, currentTabId!, currentTabId ? await getTabInfo(currentTabId).then(tab => tab.url || '') : '', modelConfig);
+					await handleInterpreterUI(template, variables, currentTabId!, currentTabId ? await getTabInfo(currentTabId).then(tab => tab.url || '') : '', modelConfig, pdfUrl);
 					
 					// Ensure the button shows the completed state after auto-run
 					if (interpretBtn) {

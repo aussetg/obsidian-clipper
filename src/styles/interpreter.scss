@@ -179,6 +179,11 @@
 		&.usage-complete {
 			color: var(--text-success);
 		}
+		
+		.token-counter-attachments {
+			margin-top: 0.25rem;
+			opacity: 0.8;
+		}
 	}
 
 	#interpreter-error {

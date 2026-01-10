@@ -6,12 +6,14 @@ import { formatDuration, formatCost } from './string-utils';
 import { adjustNoteNameHeight } from './ui-utils';
 import { debugLog } from './debug';
 import { getMessage } from './i18n';
-import { updateTokenCountWithLimit } from './token-counter';
+import { updateTokenCountWithLimit, updateTokenCountWithPdf, countTokens, PdfDisplayInfo } from './token-counter';
 import { interpret } from '../ai-sdk/interpreter-service';
 import { detectProviderType } from '../ai-sdk/provider-factory';
 import { getContextLimit, getModelCost, initializeRegistry, getEffectiveProviderId, supportsPdfInput } from '../ai-sdk/model-registry';
 import { SupportedProvider, UsageInfo, PromptResponse, isSupportedProvider, PdfAttachment } from '../ai-sdk/types';
 import browser from './browser-polyfill';
+import { formatFileSize } from './pdf-extractor';
+import { getPdfFilename } from './pdf-utils';
 
 // Store event listeners for cleanup
 const eventListeners = new WeakMap<HTMLElement, { [key: string]: EventListener }>();
@@ -65,7 +67,9 @@ interface PdfExtractionWithBase64 {
  */
 async function fetchPdfBase64ForModel(pdfUrl: string, providerId: string, modelId: string): Promise<PdfAttachment | undefined> {
 	// Check if model supports PDF input
-	if (!supportsPdfInput(providerId, modelId)) {
+	const modelSupportsPdf = supportsPdfInput(providerId, modelId);
+	
+	if (!modelSupportsPdf) {
 		debugLog('Interpreter', 'Model does not support PDF input, skipping attachment', {
 			providerId,
 			modelId,
@@ -137,6 +141,18 @@ export async function sendToLLM(promptContext: string, promptVariables: PromptVa
 		pdfAttachment = await fetchPdfBase64ForModel(pdfUrl, modelsDevProviderId, model.providerModelId);
 	}
 
+	// When PDF is attached, use minimal context to avoid sending duplicate content
+	// The model can read the PDF directly, so we don't need the extracted text
+	const effectiveContext = pdfAttachment 
+		? '[[See attached PDF]]'
+		: promptContext;
+
+	debugLog('Interpreter', 'Sending to LLM', {
+		hasPdfUrl: !!pdfUrl,
+		hasPdfAttachment: !!pdfAttachment,
+		effectiveContextLength: effectiveContext.length,
+	});
+
 	// Call the new AI SDK-based interpreter service
 	const result = await interpret({
 		providerId: provider.presetId || provider.id, // Use presetId (models.dev ID) if available
@@ -145,7 +161,7 @@ export async function sendToLLM(promptContext: string, promptVariables: PromptVa
 		baseUrl: provider.baseUrl,
 		providerType,
 		promptVariables,
-		context: promptContext,
+		context: effectiveContext,
 		// Pass model-specific settings if configured
 		modelSettings: model.settings,
 		// Pass PDF attachment if available
@@ -277,8 +293,8 @@ export async function initializeInterpreter(template: Template, variables: { [ke
 		element.addEventListener(eventType, listener);
 	}
 
-	// Helper to get model info (context limit and cost) for currently selected model
-	function getSelectedModelInfo(): { contextLimit?: number; inputCost?: number } {
+	// Helper to get model info (context limit, cost, PDF support) for currently selected model
+	function getSelectedModelInfo(): { contextLimit?: number; inputCost?: number; modelSupportsPdf?: boolean; modelsDevProviderId?: string; providerModelId?: string } {
 		const selectedModelId = modelSelect?.value;
 		if (!selectedModelId) return {};
 		
@@ -296,18 +312,38 @@ export async function initializeInterpreter(template: Template, variables: { [ke
 		// Get info from models.dev registry
 		const contextLimit = getContextLimit(modelsDevProviderId, modelConfig.providerModelId);
 		const cost = getModelCost(modelsDevProviderId, modelConfig.providerModelId);
+		const modelSupportsPdf = supportsPdfInput(modelsDevProviderId, modelConfig.providerModelId);
 		
 		return {
 			contextLimit,
-			inputCost: cost?.input
+			inputCost: cost?.input,
+			modelSupportsPdf,
+			modelsDevProviderId,
+			providerModelId: modelConfig.providerModelId
 		};
 	}
 
-	// Helper to update token count with current model's context limit and cost
+	// Track extracted PDF text tokens for display (will be set when processing PDF)
+	let extractedPdfTextTokens: number | undefined;
+	
+	// Helper to update token count with current model's context limit, cost, and PDF info
 	function updateTokenDisplay() {
 		if (tokenCounter && promptContextTextarea) {
-			const { contextLimit, inputCost } = getSelectedModelInfo();
-			updateTokenCountWithLimit(promptContextTextarea.value, tokenCounter, contextLimit, inputCost);
+			const { contextLimit, inputCost, modelSupportsPdf } = getSelectedModelInfo();
+			
+			// If we have a PDF URL and the model supports PDF input,
+			// show the effective context (minimal) + PDF attachment info
+			if (pdfUrl && modelSupportsPdf && extractedPdfTextTokens !== undefined) {
+				// The effective context when PDF is attached is just "[[See attached PDF]]"
+				const effectiveContext = '[[See attached PDF]]';
+				const pdfInfo: PdfDisplayInfo = {
+					extractedTokens: extractedPdfTextTokens
+				};
+				updateTokenCountWithPdf(effectiveContext, tokenCounter, contextLimit, inputCost, pdfInfo);
+			} else {
+				// No PDF or model doesn't support PDF - show full context tokens
+				updateTokenCountWithLimit(promptContextTextarea.value, tokenCounter, contextLimit, inputCost);
+			}
 		}
 	}
 
@@ -336,9 +372,23 @@ export async function initializeInterpreter(template: Template, variables: { [ke
 			|| generalSettings.defaultPromptContext
 			|| '{{fullHtml|remove_html:("#navbar,.footer,#footer,header,footer,style,script")|strip_tags:("script,h1,h2,h3,h4,h5,h6,meta,a,ol,ul,li,p,em,strong,i,b,s,strike,u,sup,sub,img,video,audio,math,table,cite,td,th,tr,caption")|strip_attr:("alt,src,href,id,content,property,name,datetime,title")}}';
 		promptToDisplay = await compileTemplate(tabId, promptToDisplay, variables, currentUrl);
+		
+		// If this is a PDF page, calculate extracted text tokens for display
+		// This is the token count of the extracted PDF text (used when model supports PDF natively)
+		if (pdfUrl) {
+			// Store the token count of the extracted PDF text BEFORE adding any prefixes
+			// This represents the tokens in the PDF content that will be sent as an attachment
+			extractedPdfTextTokens = countTokens(promptToDisplay);
+			
+			const filename = getPdfFilename(pdfUrl);
+			// Add PDF indicator prefix for user clarity in the context textarea
+			const pdfIndicator = `[PDF: ${filename}.pdf]\n\n`;
+			promptToDisplay = pdfIndicator + promptToDisplay;
+		}
+		
 		promptContextTextarea.value = promptToDisplay;
 		
-		// Initial token count
+		// Initial token count (will show PDF-aware format if applicable)
 		updateTokenDisplay();
 	}
 
