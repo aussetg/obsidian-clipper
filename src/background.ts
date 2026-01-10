@@ -10,6 +10,69 @@ let hasHighlights = false;
 let isContextMenuCreating = false;
 let popupPorts: { [tabId: number]: browser.Runtime.Port } = {};
 
+// ============================================================================
+// PDF Cache
+// ============================================================================
+
+/**
+ * Cache entry for PDF extraction results
+ */
+interface PdfCacheEntry {
+	text: string;
+	title: string;
+	author: string;
+	pages: number;
+	sizeBytes: number;
+	arrayBuffer: ArrayBuffer | null;
+	base64: string | null;
+	timestamp: number;
+}
+
+/**
+ * PDF extraction cache - stores results to avoid re-fetching
+ */
+const pdfCache = new Map<string, PdfCacheEntry>();
+
+/**
+ * Cache TTL: 5 minutes
+ */
+const PDF_CACHE_TTL_MS = 5 * 60 * 1000;
+
+/**
+ * Size limit for base64 encoding: 25MB
+ */
+const PDF_BASE64_SIZE_LIMIT = 25 * 1024 * 1024;
+
+/**
+ * Get a cached PDF entry if it exists and hasn't expired
+ */
+function getCachedPdf(url: string): PdfCacheEntry | null {
+	const entry = pdfCache.get(url);
+	if (!entry) return null;
+	
+	if (Date.now() - entry.timestamp > PDF_CACHE_TTL_MS) {
+		pdfCache.delete(url);
+		return null;
+	}
+	
+	return entry;
+}
+
+/**
+ * Clean up expired cache entries (called periodically)
+ */
+function cleanupPdfCache(): void {
+	const now = Date.now();
+	for (const [url, entry] of pdfCache.entries()) {
+		if (now - entry.timestamp > PDF_CACHE_TTL_MS) {
+			pdfCache.delete(url);
+		}
+	}
+}
+
+// Clean up cache every minute
+setInterval(cleanupPdfCache, 60 * 1000);
+
 async function ensureContentScriptLoadedInBackground(tabId: number): Promise<void> {
 	try {
 		// First, get the tab information
@@ -107,11 +170,26 @@ browser.runtime.onMessage.addListener((request: unknown, sender: browser.Runtime
 		const typedRequest = request as { action: string; isActive?: boolean; hasHighlights?: boolean; tabId?: number; text?: string };
 		
 		if (typedRequest.action === 'copy-to-clipboard' && typedRequest.text) {
-			// Use content script to copy to clipboard
-			browser.tabs.query({active: true, currentWindow: true}).then(async (tabs) => {
-				const currentTab = tabs[0];
-				if (currentTab && currentTab.id) {
-					try {
+			// Try to copy using navigator.clipboard first (works in popup/background context)
+			// Fall back to content script for pages where we have access
+			(async () => {
+				try {
+					// Try navigator.clipboard API first (available in extension contexts)
+					if (typeof navigator !== 'undefined' && navigator.clipboard) {
+						await navigator.clipboard.writeText(typedRequest.text!);
+						sendResponse({success: true});
+						return;
+					}
+				} catch (clipboardErr) {
+					// navigator.clipboard failed, try content script fallback
+					console.log('navigator.clipboard failed, trying content script fallback:', clipboardErr);
+				}
+
+				// Fallback: try content script (for non-PDF pages)
+				try {
+					const tabs = await browser.tabs.query({active: true, currentWindow: true});
+					const currentTab = tabs[0];
+					if (currentTab && currentTab.id) {
 						const response = await browser.tabs.sendMessage(currentTab.id, {
 							action: 'copy-text-to-clipboard',
 							text: typedRequest.text
@@ -121,13 +199,13 @@ browser.runtime.onMessage.addListener((request: unknown, sender: browser.Runtime
 						} else {
 							sendResponse({success: false, error: 'Failed to copy from content script'});
 						}
-					} catch (err) {
-						sendResponse({ success: false, error: (err as Error).message });
+					} else {
+						sendResponse({success: false, error: 'No active tab found'});
 					}
-				} else {
-					sendResponse({success: false, error: 'No active tab found'});
+				} catch (err) {
+					sendResponse({ success: false, error: (err as Error).message });
 				}
-			});
+			})();
 			return true;
 		}
 
@@ -358,12 +436,159 @@ browser.runtime.onMessage.addListener((request: unknown, sender: browser.Runtime
 			}
 		}
 
+		// PDF extraction handler - extracts text and metadata from PDF URL
+		// Uses caching to avoid redundant fetches
+		// Optionally includes base64 data for LLM attachment
+		if (typedRequest.action === "extractPdf") {
+			const url = (typedRequest as any).url;
+			const includeBase64 = (typedRequest as any).includeBase64;
+			
+			if (!url) {
+				sendResponse({
+					success: false,
+					text: '[PDF extraction failed: No URL provided]',
+					title: '',
+					author: '',
+					pages: 0,
+					error: 'No URL provided'
+				});
+				return true;
+			}
+			
+			// Check cache first
+			const cached = getCachedPdf(url);
+			if (cached) {
+				// If base64 requested and we have arrayBuffer but no base64 yet
+				let base64 = cached.base64;
+				let sizeWarning = false;
+				
+				if (includeBase64 && !cached.base64 && cached.arrayBuffer) {
+					if (cached.sizeBytes < PDF_BASE64_SIZE_LIMIT) {
+						// Lazy-load the converter
+						import('./utils/pdf-extractor').then(({ arrayBufferToBase64 }) => {
+							cached.base64 = arrayBufferToBase64(cached.arrayBuffer!);
+							sendResponse({
+								success: true,
+								text: cached.text,
+								title: cached.title,
+								author: cached.author,
+								pages: cached.pages,
+								sizeBytes: cached.sizeBytes,
+								base64: cached.base64,
+								sizeWarning: false,
+								fromCache: true
+							});
+						});
+						return true;
+					} else {
+						sizeWarning = true;
+					}
+				} else if (includeBase64 && cached.sizeBytes >= PDF_BASE64_SIZE_LIMIT) {
+					sizeWarning = true;
+				}
+				
+				sendResponse({
+					success: true,
+					text: cached.text,
+					title: cached.title,
+					author: cached.author,
+					pages: cached.pages,
+					sizeBytes: cached.sizeBytes,
+					base64: includeBase64 ? base64 : undefined,
+					sizeWarning,
+					fromCache: true
+				});
+				return true;
+			}
+			
+			// Not in cache - verify Content-Type and extract
+			import('./utils/pdf-extractor').then(async ({ 
+				verifyPdfContentType, 
+				extractPdfContent, 
+				arrayBufferToBase64,
+				BASE64_SIZE_LIMIT 
+			}) => {
+				// Verify Content-Type first
+				const verification = await verifyPdfContentType(url);
+				if (!verification.isPdf) {
+					sendResponse({
+						success: false,
+						text: `[PDF extraction failed: ${verification.error}]`,
+						title: '',
+						author: '',
+						pages: 0,
+						error: verification.error
+					});
+					return;
+				}
+				
+				// Extract PDF content
+				const result = await extractPdfContent(url);
+				
+				if (!result.success) {
+					sendResponse(result);
+					return;
+				}
+				
+				// Cache the result
+				const cacheEntry: PdfCacheEntry = {
+					text: result.text,
+					title: result.title,
+					author: result.author,
+					pages: result.pages,
+					sizeBytes: result.sizeBytes || 0,
+					arrayBuffer: result.arrayBuffer || null,
+					base64: null,
+					timestamp: Date.now()
+				};
+				pdfCache.set(url, cacheEntry);
+				
+				// Convert to base64 if requested and under limit
+				let base64: string | undefined;
+				let sizeWarning = false;
+				
+				if (includeBase64) {
+					if ((result.sizeBytes || 0) < BASE64_SIZE_LIMIT && result.arrayBuffer) {
+						base64 = arrayBufferToBase64(result.arrayBuffer);
+						cacheEntry.base64 = base64;
+					} else {
+						sizeWarning = true;
+					}
+				}
+				
+				sendResponse({
+					success: true,
+					text: result.text,
+					title: result.title,
+					author: result.author,
+					pages: result.pages,
+					sizeBytes: result.sizeBytes,
+					base64,
+					sizeWarning,
+					fromCache: false
+				});
+			}).catch((error) => {
+				console.error('Error in PDF extraction:', error);
+				sendResponse({
+					success: false,
+					text: `[PDF extraction failed: ${error instanceof Error ? error.message : String(error)}]`,
+					title: '',
+					author: '',
+					pages: 0,
+					error: error instanceof Error ? error.message : String(error)
+				});
+			});
+			
+			return true;
+		}
+
 		// For other actions that use sendResponse
 		if (typedRequest.action === "extractContent" || 
 			typedRequest.action === "ensureContentScriptLoaded" ||
 			typedRequest.action === "getHighlighterMode" ||
 			typedRequest.action === "toggleHighlighterMode" ||
-			typedRequest.action === "openObsidianUrl") {
+			typedRequest.action === "openObsidianUrl" ||
+			typedRequest.action === "extractPdf") {
 			return true;
 		}
 	}
