@@ -220,6 +220,20 @@ export interface ModelSettings {
 }
 
 /**
+ * PDF attachment data for multimodal messages
+ */
+export interface PdfAttachment {
+	/** The original URL of the PDF */
+	url: string;
+	/** Base64-encoded PDF data (lazily fetched) */
+	base64?: string;
+	/** MIME type (always application/pdf) */
+	mimeType: 'application/pdf';
+	/** File size in bytes */
+	sizeBytes?: number;
+}
+
+/**
  * Options for the interpreter service
  */
 export interface InterpreterOptions {
@@ -243,6 +257,8 @@ export interface InterpreterOptions {
 	context: string;
 	/** Model-specific settings */
 	modelSettings?: ModelSettings;
+	/** PDF attachment for PDF-capable models */
+	pdfAttachment?: PdfAttachment;
 	/** @deprecated Use modelSettings.maxTokens instead */
 	maxTokens?: number;
 	/** @deprecated Use modelSettings.temperature instead */

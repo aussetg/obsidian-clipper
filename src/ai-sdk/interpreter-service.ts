@@ -19,6 +19,7 @@ import {
 	isInitialized,
 	validateContextWithDetails,
 	supportsStructuredOutput,
+	supportsPdfInput,
 } from './model-registry';
 import { countTokens } from '../utils/token-counter';
 import {
@@ -223,7 +224,12 @@ export async function interpret(options: InterpreterOptions): Promise<Interprete
 	// Build dynamic system prompt with JSON schema
 	const systemPrompt = buildSystemPrompt(promptInfos);
 
+	// Check early if we should attach PDF
+	const shouldAttachPdf = options.pdfAttachment?.base64 && 
+		supportsPdfInput(options.providerId, options.providerModelId);
+
 	// Estimate token count and validate against context window
+	// Note: context should already be minimal '[[See attached PDF]]' if PDF is being attached
 	const fullPrompt = systemPrompt + options.context + JSON.stringify(promptContent);
 	const estimatedTokens = countTokens(fullPrompt);
 
@@ -263,6 +269,15 @@ export async function interpret(options: InterpreterOptions): Promise<Interprete
 		options.providerModelId
 	);
 
+	debugLog('InterpreterService', 'PDF attachment check', {
+		hasPdfAttachment: !!options.pdfAttachment,
+		hasBase64: !!options.pdfAttachment?.base64,
+		modelSupportsPdf: supportsPdfInput(options.providerId, options.providerModelId),
+		willAttachPdf: shouldAttachPdf,
+		contextLength: options.context.length,
+		contextPreview: options.context.substring(0, 100),
+	});
+
 	// Build provider-specific options for reasoning
 	const providerOptions = reasoningEnabled
 		? buildReasoningOptions(options.providerType, reasoningEffort)
@@ -301,14 +316,33 @@ export async function interpret(options: InterpreterOptions): Promise<Interprete
 			});
 
 			try {
+				// Build messages, potentially with PDF attachment
+				// When PDF is attached, we use options.context (minimal) instead of full text
+				const messages = shouldAttachPdf && options.pdfAttachment?.base64
+					? [
+						{
+							role: 'user' as const,
+							content: [
+								{ type: 'text' as const, text: options.context },
+								{
+									type: 'file' as const,
+									data: options.pdfAttachment.base64,
+									mediaType: 'application/pdf' as const,
+								},
+							],
+						},
+						{ role: 'user' as const, content: JSON.stringify(promptContent) },
+					]
+					: [
+						{ role: 'user' as const, content: options.context },
+						{ role: 'user' as const, content: JSON.stringify(promptContent) },
+					];
+
 				const result = await generateObject({
 					model,
 					schema: promptResponseSchema,
 					system: systemPrompt,
-					messages: [
-						{ role: 'user', content: options.context },
-						{ role: 'user', content: JSON.stringify(promptContent) },
-					],
+					messages,
 					maxOutputTokens: maxTokens,
 					temperature,
 					...(providerOptions && { providerOptions }),
@@ -347,13 +381,31 @@ export async function interpret(options: InterpreterOptions): Promise<Interprete
 				// This handles models that claim tool_call support but fail in practice
 				const generateText = await getGenerateText();
 
+				// Use same message format as above
+				const fallbackMessages = shouldAttachPdf && options.pdfAttachment?.base64
+					? [
+						{
+							role: 'user' as const,
+							content: [
+								{ type: 'text' as const, text: options.context },
+								{
+									type: 'file' as const,
+									data: options.pdfAttachment.base64,
+									mediaType: 'application/pdf' as const,
+								},
+							],
+						},
+						{ role: 'user' as const, content: JSON.stringify(promptContent) },
+					]
+					: [
+						{ role: 'user' as const, content: options.context },
+						{ role: 'user' as const, content: JSON.stringify(promptContent) },
+					];
+
 				const fallbackResult = await generateText({
 					model,
 					system: systemPrompt,
-					messages: [
-						{ role: 'user', content: options.context },
-						{ role: 'user', content: JSON.stringify(promptContent) },
-					],
+					messages: fallbackMessages,
 					maxOutputTokens: maxTokens,
 					temperature,
 					...(providerOptions && { providerOptions }),
@@ -382,13 +434,31 @@ export async function interpret(options: InterpreterOptions): Promise<Interprete
 
 			const generateText = await getGenerateText();
 
+			// Build messages with optional PDF attachment
+			const textMessages = shouldAttachPdf && options.pdfAttachment?.base64
+				? [
+					{
+						role: 'user' as const,
+						content: [
+							{ type: 'text' as const, text: options.context },
+							{
+								type: 'file' as const,
+								data: options.pdfAttachment.base64,
+								mediaType: 'application/pdf' as const,
+							},
+						],
+					},
+					{ role: 'user' as const, content: JSON.stringify(promptContent) },
+				]
+				: [
+					{ role: 'user' as const, content: options.context },
+					{ role: 'user' as const, content: JSON.stringify(promptContent) },
+				];
+
 			const result = await generateText({
 				model,
 				system: systemPrompt,
-				messages: [
-					{ role: 'user', content: options.context },
-					{ role: 'user', content: JSON.stringify(promptContent) },
-				],
+				messages: textMessages,
 				maxOutputTokens: maxTokens,
 				temperature,
 				...(providerOptions && { providerOptions }),

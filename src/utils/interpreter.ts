@@ -9,8 +9,9 @@ import { getMessage } from './i18n';
 import { updateTokenCountWithLimit } from './token-counter';
 import { interpret } from '../ai-sdk/interpreter-service';
 import { detectProviderType } from '../ai-sdk/provider-factory';
-import { getContextLimit, getModelCost, initializeRegistry, getEffectiveProviderId } from '../ai-sdk/model-registry';
-import { SupportedProvider, UsageInfo, PromptResponse, isSupportedProvider } from '../ai-sdk/types';
+import { getContextLimit, getModelCost, initializeRegistry, getEffectiveProviderId, supportsPdfInput } from '../ai-sdk/model-registry';
+import { SupportedProvider, UsageInfo, PromptResponse, isSupportedProvider, PdfAttachment } from '../ai-sdk/types';
+import browser from './browser-polyfill';
 
 // Store event listeners for cleanup
 const eventListeners = new WeakMap<HTMLElement, { [key: string]: EventListener }>();
@@ -38,12 +39,77 @@ export interface LLMResult {
 }
 
 /**
+ * Options for sending to LLM, including optional PDF attachment
+ */
+export interface SendToLLMOptions {
+	promptContext: string;
+	promptVariables: PromptVariable[];
+	model: ModelConfig;
+	/** Optional PDF URL for PDF-capable models */
+	pdfUrl?: string;
+}
+
+/**
+ * Result from PDF extraction with base64 data
+ */
+interface PdfExtractionWithBase64 {
+	success: boolean;
+	base64?: string;
+	sizeBytes?: number;
+	error?: string;
+}
+
+/**
+ * Lazy-fetch PDF as base64 if the model supports PDF input.
+ * Uses the single-fetch extraction with includeBase64 option.
+ */
+async function fetchPdfBase64ForModel(pdfUrl: string, providerId: string, modelId: string): Promise<PdfAttachment | undefined> {
+	// Check if model supports PDF input
+	if (!supportsPdfInput(providerId, modelId)) {
+		debugLog('Interpreter', 'Model does not support PDF input, skipping attachment', {
+			providerId,
+			modelId,
+		});
+		return undefined;
+	}
+
+	debugLog('Interpreter', 'Fetching PDF with base64 for model that supports PDF input');
+	
+	try {
+		// Use extractPdf with includeBase64 flag for single-fetch optimization
+		const result = await browser.runtime.sendMessage({
+			action: 'extractPdf',
+			url: pdfUrl,
+			includeBase64: true
+		}) as PdfExtractionWithBase64;
+
+		if (result.success && result.base64) {
+			debugLog('Interpreter', 'PDF base64 fetched successfully', {
+				sizeBytes: result.sizeBytes,
+			});
+			return {
+				url: pdfUrl,
+				base64: result.base64,
+				mimeType: 'application/pdf',
+				sizeBytes: result.sizeBytes,
+			};
+		} else {
+			console.warn('Failed to fetch PDF base64:', result.error);
+			return undefined;
+		}
+	} catch (error) {
+		console.error('Error fetching PDF base64:', error);
+		return undefined;
+	}
+}
+
+/**
  * Send prompt variables to an LLM for processing using the AI SDK.
  * 
  * This is a wrapper that maintains backwards compatibility while using
  * the new AI SDK-based interpreter service under the hood.
  */
-export async function sendToLLM(promptContext: string, promptVariables: PromptVariable[], model: ModelConfig): Promise<LLMResult> {
+export async function sendToLLM(promptContext: string, promptVariables: PromptVariable[], model: ModelConfig, pdfUrl?: string): Promise<LLMResult> {
 	debugLog('Interpreter', 'Sending request to LLM via AI SDK...');
 	
 	// Find the provider for this model
@@ -62,6 +128,15 @@ export async function sendToLLM(promptContext: string, promptVariables: PromptVa
 		? provider.type 
 		: detectProviderType(provider.baseUrl, provider.name);
 
+	// Get the effective provider ID for model lookups
+	const modelsDevProviderId = getEffectiveProviderId(provider.presetId, model.providerModelId);
+
+	// Lazy-fetch PDF base64 if URL provided and model supports it
+	let pdfAttachment: PdfAttachment | undefined;
+	if (pdfUrl && modelsDevProviderId) {
+		pdfAttachment = await fetchPdfBase64ForModel(pdfUrl, modelsDevProviderId, model.providerModelId);
+	}
+
 	// Call the new AI SDK-based interpreter service
 	const result = await interpret({
 		providerId: provider.presetId || provider.id, // Use presetId (models.dev ID) if available
@@ -72,12 +147,15 @@ export async function sendToLLM(promptContext: string, promptVariables: PromptVa
 		promptVariables,
 		context: promptContext,
 		// Pass model-specific settings if configured
-		modelSettings: model.settings
+		modelSettings: model.settings,
+		// Pass PDF attachment if available
+		pdfAttachment,
 	});
 
 	debugLog('Interpreter', 'AI SDK response received', {
 		responseCount: result.promptResponses.length,
-		usage: result.usage
+		usage: result.usage,
+		hadPdfAttachment: !!pdfAttachment,
 	});
 
 	return { 
@@ -171,7 +249,7 @@ export function collectPromptVariables(template: Template | null): PromptVariabl
 	return Array.from(promptMap.values());
 }
 
-export async function initializeInterpreter(template: Template, variables: { [key: string]: string }, tabId: number, currentUrl: string) {
+export async function initializeInterpreter(template: Template, variables: { [key: string]: string }, tabId: number, currentUrl: string, pdfUrl?: string) {
 	const interpreterContainer = document.getElementById('interpreter');
 	const interpretBtn = document.getElementById('interpret-btn');
 	const promptContextTextarea = document.getElementById('prompt-context') as HTMLTextAreaElement;
@@ -273,7 +351,7 @@ export async function initializeInterpreter(template: Template, variables: { [ke
 				if (!modelConfig) {
 					throw new Error(`Model configuration not found for ${selectedModelId}`);
 				}
-				await handleInterpreterUI(template, variables, tabId, currentUrl, modelConfig);
+				await handleInterpreterUI(template, variables, tabId, currentUrl, modelConfig, pdfUrl);
 			};
 			storeListener(interpretBtn, 'click', clickListener);
 		}
@@ -325,7 +403,8 @@ export async function handleInterpreterUI(
 	variables: { [key: string]: string },
 	tabId: number,
 	currentUrl: string,
-	modelConfig: ModelConfig
+	modelConfig: ModelConfig,
+	pdfUrl?: string
 ): Promise<void> {
 	const interpreterContainer = document.getElementById('interpreter');
 	const interpretBtn = document.getElementById('interpret-btn') as HTMLButtonElement;
@@ -384,8 +463,8 @@ export async function handleInterpreterUI(
 			responseTimer.textContent = formatDuration(elapsedTime);
 		}, 10);
 
-		const { promptResponses, usage } = await sendToLLM(contextToUse, promptVariables, modelConfig);
-		debugLog('Interpreter', 'LLM response:', { promptResponses, usage });
+		const { promptResponses, usage } = await sendToLLM(contextToUse, promptVariables, modelConfig, pdfUrl);
+		debugLog('Interpreter', 'LLM response:', { promptResponses, usage, hadPdfUrl: !!pdfUrl });
 
 		// Stop the timer and update UI
 		clearInterval(timerInterval);
