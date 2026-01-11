@@ -65,9 +65,6 @@
 	"behavior": {
 		"message": "Opførsel"
 	},
-	"behaviorWarning": {
-		"message": "Tilføjelse til eksisterende eller daglig note kræver Obsidian 1.7.2 eller nyere."
-	},
 	"byDay": {
 		"message": "Per dag"
 	},
