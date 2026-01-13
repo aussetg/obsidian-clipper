@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "De API-endpoint URL voor deze provider."
 	},
+	"providerForceBase64": {
+		"message": "Base64-codering voor PDF afdwingen"
+	},
+	"providerForceBase64Description": {
+		"message": "Schakel in als u een proxy gebruikt of een aangepast eindpunt dat geen URL-gebaseerde PDF-invoer ondersteunt."
+	},
 	"providerModelId": {
 		"message": "Model-ID"
 	},

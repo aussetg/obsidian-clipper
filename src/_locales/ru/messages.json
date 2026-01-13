@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "URL конечной точки API для этого провайдера."
 	},
+	"providerForceBase64": {
+		"message": "Принудительно кодировать PDF в base64"
+	},
+	"providerForceBase64Description": {
+		"message": "Включите, если используете прокси или пользовательскую конечную точку, которая не поддерживает ввод PDF через URL."
+	},
 	"providerModelId": {
 		"message": "ID модели"
 	},

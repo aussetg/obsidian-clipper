@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "這是此提供者的 API 端點 URL。"
 	},
+	"providerForceBase64": {
+		"message": "強制以 Base64 編碼 PDF"
+	},
+	"providerForceBase64Description": {
+		"message": "如果您使用代理或不支援以 URL 提供 PDF 的自訂端點，請啟用此項。"
+	},
 	"providerModelId": {
 		"message": "模型 ID"
 	},

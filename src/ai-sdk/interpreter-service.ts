@@ -10,7 +10,7 @@
  * Uses dynamic imports to lazy-load the AI SDK only when needed.
  */
 
-import { debugLog } from '../utils/debug';
+import { debugLog, redactUrlForLogging } from '../utils/debug';
 import { createLanguageModel, detectProviderType } from './provider-factory';
 import {
 	getModel,
@@ -224,8 +224,8 @@ export async function interpret(options: InterpreterOptions): Promise<Interprete
 	// Build dynamic system prompt with JSON schema
 	const systemPrompt = buildSystemPrompt(promptInfos);
 
-	// Check early if we should attach PDF
-	const shouldAttachPdf = options.pdfAttachment?.base64 && 
+	// Check early if we should attach PDF - either URL-based or base64
+	const shouldAttachPdf = options.pdfAttachment && 
 		supportsPdfInput(options.providerId, options.providerModelId);
 
 	// Estimate token count and validate against context window
@@ -274,6 +274,10 @@ export async function interpret(options: InterpreterOptions): Promise<Interprete
 		hasBase64: !!options.pdfAttachment?.base64,
 		modelSupportsPdf: supportsPdfInput(options.providerId, options.providerModelId),
 		willAttachPdf: shouldAttachPdf,
+		pdfMethod: shouldAttachPdf 
+			? (options.pdfAttachment?.base64 ? 'base64' : 'url')
+			: 'none',
+		pdfUrl: redactUrlForLogging(options.pdfAttachment?.url),
 		contextLength: options.context.length,
 		contextPreview: options.context.substring(0, 100),
 	});
@@ -318,7 +322,7 @@ export async function interpret(options: InterpreterOptions): Promise<Interprete
 			try {
 				// Build messages, potentially with PDF attachment
 				// When PDF is attached, we use options.context (minimal) instead of full text
-				const messages = shouldAttachPdf && options.pdfAttachment?.base64
+				const messages = shouldAttachPdf && options.pdfAttachment
 					? [
 						{
 							role: 'user' as const,
@@ -326,7 +330,10 @@ export async function interpret(options: InterpreterOptions): Promise<Interprete
 								{ type: 'text' as const, text: options.context },
 								{
 									type: 'file' as const,
-									data: options.pdfAttachment.base64,
+									// Use base64 if available, otherwise use URL object for URL-based sending
+									data: options.pdfAttachment.base64 
+										? options.pdfAttachment.base64 
+										: new URL(options.pdfAttachment.url),
 									mediaType: 'application/pdf' as const,
 								},
 							],
@@ -382,7 +389,7 @@ export async function interpret(options: InterpreterOptions): Promise<Interprete
 				const generateText = await getGenerateText();
 
 				// Use same message format as above
-				const fallbackMessages = shouldAttachPdf && options.pdfAttachment?.base64
+				const fallbackMessages = shouldAttachPdf && options.pdfAttachment
 					? [
 						{
 							role: 'user' as const,
@@ -390,7 +397,10 @@ export async function interpret(options: InterpreterOptions): Promise<Interprete
 								{ type: 'text' as const, text: options.context },
 								{
 									type: 'file' as const,
-									data: options.pdfAttachment.base64,
+									// Use base64 if available, otherwise use URL object for URL-based sending
+									data: options.pdfAttachment.base64 
+										? options.pdfAttachment.base64 
+										: new URL(options.pdfAttachment.url),
 									mediaType: 'application/pdf' as const,
 								},
 							],
@@ -435,7 +445,7 @@ export async function interpret(options: InterpreterOptions): Promise<Interprete
 			const generateText = await getGenerateText();
 
 			// Build messages with optional PDF attachment
-			const textMessages = shouldAttachPdf && options.pdfAttachment?.base64
+			const textMessages = shouldAttachPdf && options.pdfAttachment
 				? [
 					{
 						role: 'user' as const,
@@ -443,7 +453,10 @@ export async function interpret(options: InterpreterOptions): Promise<Interprete
 							{ type: 'text' as const, text: options.context },
 							{
 								type: 'file' as const,
-								data: options.pdfAttachment.base64,
+								// Use base64 if available, otherwise use URL object for URL-based sending
+								data: options.pdfAttachment.base64 
+									? options.pdfAttachment.base64 
+									: new URL(options.pdfAttachment.url),
 								mediaType: 'application/pdf' as const,
 							},
 						],

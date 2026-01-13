@@ -671,6 +671,12 @@
 	"providerBaseUrlDescription": {
 		"message": "Η διεύθυνση URL του τελικού σημείου API για αυτόν τον πάροχο."
 	},
+	"providerForceBase64": {
+		"message": "Αναγκαστική κωδικοποίηση PDF σε base64"
+	},
+	"providerForceBase64Description": {
+		"message": "Ενεργοποιήστε εάν χρησιμοποιείτε proxy ή προσαρμοσμένο endpoint που δεν υποστηρίζει εισαγωγή PDF μέσω URL."
+	},
 	"providerModelId": {
 		"message": "Αναγνωριστικό μοντέλου"
 	},

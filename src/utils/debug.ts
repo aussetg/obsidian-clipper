@@ -35,6 +35,26 @@ export const debugLog = (filterName: string, ...args: any[]) => {
 // Function to check if debug mode is on
 export const isDebugMode = () => DEBUG_MODE && debugMode;
 
+/**
+ * Redact query parameters from a URL for safe logging.
+ * Query params may contain sensitive tokens (e.g., signed URLs, SAS tokens).
+ * 
+ * @param url - The URL to redact
+ * @returns The URL with query parameters replaced by [redacted], or [invalid-url] if parsing fails
+ */
+export function redactUrlForLogging(url: string | undefined): string {
+	if (!url) return '[no-url]';
+	try {
+		const parsed = new URL(url);
+		if (parsed.search) {
+			return `${parsed.origin}${parsed.pathname}?[redacted]`;
+		}
+		return url;
+	} catch {
+		return '[invalid-url]';
+	}
+}
+
 // Expose toggleDebug to the global scope only in debug mode
 if (DEBUG_MODE) {
 	(window as any).toggleDebug = toggleDebug;

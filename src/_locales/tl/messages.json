@@ -671,6 +671,12 @@
 	"providerBaseUrlDescription": {
 		"message": "Ang API endpoint URL para sa provider na ito."
 	},
+	"providerForceBase64": {
+		"message": "Pilitin ang base64 na pag-encode para sa PDF"
+	},
+	"providerForceBase64Description": {
+		"message": "I-on kung gumagamit ng proxy o pasadyang endpoint na hindi sumusuporta sa input ng PDF na batay sa URL."
+	},
 	"providerModelId": {
 		"message": "Model ID"
 	},

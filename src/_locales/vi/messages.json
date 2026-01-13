@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "URL điểm cuối API cho nhà cung cấp này."
 	},
+	"providerForceBase64": {
+		"message": "Buộc mã hóa PDF dưới dạng base64"
+	},
+	"providerForceBase64Description": {
+		"message": "Bật nếu dùng proxy hoặc endpoint tùy chỉnh không hỗ trợ nhập PDF theo URL."
+	},
 	"providerModelId": {
 		"message": "ID mô hình"
 	},

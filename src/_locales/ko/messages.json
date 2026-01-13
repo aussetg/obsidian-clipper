@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "이 제공자를 위한 API 엔드포인트 URL입니다."
 	},
+	"providerForceBase64": {
+		"message": "PDF를 base64로 강제 인코딩"
+	},
+	"providerForceBase64Description": {
+		"message": "URL 기반 PDF 입력을 지원하지 않는 프록시나 커스텀 엔드포인트를 사용하는 경우 활성화하세요."
+	},
 	"providerModelId": {
 		"message": "모델 ID"
 	},

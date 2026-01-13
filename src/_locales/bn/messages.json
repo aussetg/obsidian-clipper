@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "এই প্রোভাইডারের API এন্ডপয়েন্ট URL।"
 	},
+	"providerForceBase64": {
+		"message": "base64 PDF এনকোডিং বাধ্য করুন"
+	},
+	"providerForceBase64Description": {
+		"message": "URL-ভিত্তিক PDF ইনপুট সমর্থন করে না এমন প্রক্সি বা কাস্টম এন্ডপয়েন্ট ব্যবহার করলে এটি সক্রিয় করুন।"
+	},
 	"providerModelId": {
 		"message": "মডেল আইডি"
 	},

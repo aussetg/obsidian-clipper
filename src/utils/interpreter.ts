@@ -4,11 +4,11 @@ import { compileTemplate } from './template-compiler';
 import { applyFilters } from './filters';
 import { formatDuration, formatCost } from './string-utils';
 import { adjustNoteNameHeight } from './ui-utils';
-import { debugLog } from './debug';
+import { debugLog, redactUrlForLogging } from './debug';
 import { getMessage } from './i18n';
 import { updateTokenCountWithLimit, updateTokenCountWithPdf, countTokens, PdfDisplayInfo } from './token-counter';
 import { interpret } from '../ai-sdk/interpreter-service';
-import { detectProviderType } from '../ai-sdk/provider-factory';
+import { detectProviderType, supportsPdfUrl } from '../ai-sdk/provider-factory';
 import { getContextLimit, getModelCost, initializeRegistry, getEffectiveProviderId, supportsPdfInput } from '../ai-sdk/model-registry';
 import { SupportedProvider, UsageInfo, PromptResponse, isSupportedProvider, PdfAttachment } from '../ai-sdk/types';
 import browser from './browser-polyfill';
@@ -62,10 +62,16 @@ interface PdfExtractionWithBase64 {
 }
 
 /**
- * Lazy-fetch PDF as base64 if the model supports PDF input.
- * Uses the single-fetch extraction with includeBase64 option.
+ * Prepare PDF attachment for a model that supports PDF input.
+ * Returns URL-only attachment for providers that support it, or fetches base64 for others.
  */
-async function fetchPdfBase64ForModel(pdfUrl: string, providerId: string, modelId: string): Promise<PdfAttachment | undefined> {
+async function preparePdfAttachment(
+	pdfUrl: string, 
+	providerId: string, 
+	modelId: string,
+	providerType: SupportedProvider,
+	forceBase64: boolean
+): Promise<PdfAttachment | undefined> {
 	// Check if model supports PDF input
 	const modelSupportsPdf = supportsPdfInput(providerId, modelId);
 	
@@ -77,7 +83,26 @@ async function fetchPdfBase64ForModel(pdfUrl: string, providerId: string, modelI
 		return undefined;
 	}
 
-	debugLog('Interpreter', 'Fetching PDF with base64 for model that supports PDF input');
+	// Check if we should use URL-based PDF (provider supports it and not forced to base64)
+	if (!forceBase64 && supportsPdfUrl(providerType)) {
+		debugLog('Interpreter', 'Using URL-based PDF attachment', { 
+			providerId, 
+			providerType,
+			pdfUrl: redactUrlForLogging(pdfUrl),
+		});
+		return {
+			url: pdfUrl,
+			mimeType: 'application/pdf',
+			// No base64 - provider will fetch the URL directly
+		};
+	}
+
+	// Provider requires base64, or user forced base64
+	debugLog('Interpreter', 'Using base64 PDF attachment', { 
+		providerId, 
+		providerType,
+		forceBase64 
+	});
 	
 	try {
 		// Use extractPdf with includeBase64 flag for single-fetch optimization
@@ -135,10 +160,16 @@ export async function sendToLLM(promptContext: string, promptVariables: PromptVa
 	// Get the effective provider ID for model lookups
 	const modelsDevProviderId = getEffectiveProviderId(provider.presetId, model.providerModelId);
 
-	// Lazy-fetch PDF base64 if URL provided and model supports it
+	// Prepare PDF attachment if URL provided and model supports it
 	let pdfAttachment: PdfAttachment | undefined;
 	if (pdfUrl && modelsDevProviderId) {
-		pdfAttachment = await fetchPdfBase64ForModel(pdfUrl, modelsDevProviderId, model.providerModelId);
+		pdfAttachment = await preparePdfAttachment(
+			pdfUrl, 
+			modelsDevProviderId, 
+			model.providerModelId,
+			providerType,
+			provider.forceBase64Pdf ?? false
+		);
 	}
 
 	// When PDF is attached, use minimal context to avoid sending duplicate content

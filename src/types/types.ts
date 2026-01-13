@@ -65,6 +65,7 @@ export interface Provider {
 	apiKey: string;
 	apiKeyRequired?: boolean;
 	presetId?: string;
+	forceBase64Pdf?: boolean;  // Force base64 encoding for PDFs instead of URL (for proxies/custom endpoints)
 }
 
 export interface Rating {

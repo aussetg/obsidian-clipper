@@ -671,6 +671,12 @@
 	"providerBaseUrlDescription": {
 		"message": "URL кінцевої точки API для цього провайдера."
 	},
+	"providerForceBase64": {
+		"message": "Примусове кодування PDF у base64"
+	},
+	"providerForceBase64Description": {
+		"message": "Увімкніть, якщо ви використовуєте проксі або власну кінцеву точку, яка не підтримує передачу PDF через URL."
+	},
 	"providerModelId": {
 		"message": "ID моделі"
 	},

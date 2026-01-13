@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "此提供商的 API 端点 URL。"
 	},
+	"providerForceBase64": {
+		"message": "强制将 PDF 编码为 base64"
+	},
+	"providerForceBase64Description": {
+		"message": "如果使用的代理或自定义端点不支持基于 URL 的 PDF 输入，请启用。"
+	},
 	"providerModelId": {
 		"message": "模型 ID"
 	},

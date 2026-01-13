@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "URL نقطه پایانی API برای این ارائه دهنده."
 	},
+	"providerForceBase64": {
+		"message": "اجبار استفاده از Base64 برای PDF"
+	},
+	"providerForceBase64Description": {
+		"message": "اگر از پراکسی یا نقطه‌پایانی سفارشی استفاده می‌کنید که ورودی PDF مبتنی بر URL را پشتیبانی نمی‌کند، این گزینه را فعال کنید."
+	},
 	"providerModelId": {
 		"message": "شناسه مدل"
 	},

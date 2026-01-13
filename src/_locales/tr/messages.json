@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "Bu sağlayıcı için API uç noktası URL'si."
 	},
+	"providerForceBase64": {
+		"message": "PDF için base64 kodlamasını zorla"
+	},
+	"providerForceBase64Description": {
+		"message": "URL tabanlı PDF girişini desteklemeyen bir proxy veya özel uç nokta kullanıyorsanız etkinleştirin."
+	},
 	"providerModelId": {
 		"message": "Model ID"
 	},

@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "URL จุดสิ้นสุด API สำหรับผู้ให้บริการนี้"
 	},
+	"providerForceBase64": {
+		"message": "บังคับเข้ารหัส PDF เป็น base64"
+	},
+	"providerForceBase64Description": {
+		"message": "เปิดใช้งานหากใช้พร็อกซีหรือ endpoint ที่กำหนดเองซึ่งไม่รองรับการป้อน PDF ผ่าน URL"
+	},
 	"providerModelId": {
 		"message": "ID โมเดล"
 	},

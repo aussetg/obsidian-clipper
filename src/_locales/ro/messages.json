@@ -671,6 +671,12 @@
 	"providerBaseUrlDescription": {
 		"message": "URL-ul endpoint-ului API pentru acest furnizor."
 	},
+	"providerForceBase64": {
+		"message": "Forțează codificarea PDF în base64"
+	},
+	"providerForceBase64Description": {
+		"message": "Activează dacă folosești un proxy sau un endpoint personalizat care nu acceptă introducerea PDF-urilor prin URL."
+	},
 	"providerModelId": {
 		"message": "ID model"
 	},

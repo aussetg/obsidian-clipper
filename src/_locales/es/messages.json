@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "La URL del punto final de la API para este proveedor."
 	},
+	"providerForceBase64": {
+		"message": "Forzar codificación PDF en base64"
+	},
+	"providerForceBase64Description": {
+		"message": "Habilítelo si utiliza un proxy o un endpoint personalizado que no admite la entrada de PDF por URL."
+	},
 	"providerModelId": {
 		"message": "ID del modelo"
 	},

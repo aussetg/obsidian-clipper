@@ -671,6 +671,12 @@
 	"providerBaseUrlDescription": {
 		"message": "API-endepunktets URL for denne udbyder."
 	},
+	"providerForceBase64": {
+		"message": "Tving base64-kodning af PDF"
+	},
+	"providerForceBase64Description": {
+		"message": "Aktivér, hvis du bruger en proxy eller et brugerdefineret endepunkt, der ikke understøtter URL-baseret PDF-input."
+	},
 	"providerModelId": {
 		"message": "Model-ID"
 	},

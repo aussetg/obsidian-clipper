@@ -6,8 +6,9 @@ import { showModal, hideModal } from '../utils/modal-utils';
 import { getMessage, translatePage } from '../utils/i18n';
 import { debugLog } from '../utils/debug';
 import { initializeRegistry, getProviderDetails, isInitialized as isRegistryInitialized, getModel as getModelFromRegistry, getModelCapabilityHints, getEffectiveProviderId } from '../ai-sdk/model-registry';
-import { getDefaultBaseUrl } from '../ai-sdk/provider-factory';
+import { getDefaultBaseUrl, detectProviderType, supportsPdfUrl } from '../ai-sdk/provider-factory';
 import { ModelSettings, ReasoningEffort } from '../types/types';
+import { SupportedProvider } from '../ai-sdk/types';
 
 /**
  * Pretty display names for provider IDs
@@ -562,8 +563,10 @@ async function showProviderModal(provider: Provider, index?: number) {
 		const nameContainer = nameInput.closest('.setting-item') as HTMLElement;
 		const apiKeyContainer = apiKeyInput.closest('.setting-item') as HTMLElement;
 		const apiKeyDescription = apiKeyInput.closest('.setting-item')?.querySelector('.setting-item-description') as HTMLElement;
+		const forceBase64Container = document.getElementById('provider-force-base64-container') as HTMLElement;
+		const forceBase64Checkbox = form.querySelector('[name="forceBase64Pdf"]') as HTMLInputElement;
 
-		if (!apiKeyContainer || !apiKeyDescription || !nameContainer || !presetSelect || !nameInput || !baseUrlInput || !apiKeyInput) {
+		if (!apiKeyContainer || !apiKeyDescription || !nameContainer || !presetSelect || !nameInput || !baseUrlInput || !apiKeyInput || !forceBase64Container || !forceBase64Checkbox) {
 			console.error('Required provider modal elements not found');
 			return;
 		}
@@ -616,10 +619,33 @@ async function showProviderModal(provider: Provider, index?: number) {
 
 			nameContainer.style.display = selectedPreset ? 'none' : 'block';
 			
+			// Determine provider type for PDF URL support check
+			let providerType: SupportedProvider;
+			if (selectedPreset) {
+				// Use preset ID to detect provider type
+				providerType = detectProviderType(selectedPreset.baseUrl, selectedPreset.name);
+			} else {
+				// Custom provider - detect from current URL input
+				providerType = detectProviderType(baseUrlInput.value, nameInput.value);
+			}
+
+			// Show/hide force base64 option based on whether provider supports PDF URLs
+			const showForceBase64 = supportsPdfUrl(providerType);
+			forceBase64Container.style.display = showForceBase64 ? 'block' : 'none';
+
+			// Set checkbox value when editing existing provider
+			const editingOriginalPreset = index !== undefined && selectedPresetId === currentPresetId;
+			if (editingOriginalPreset || (index !== undefined && !selectedPreset)) {
+				// Editing an existing provider - restore their setting
+				forceBase64Checkbox.checked = provider.forceBase64Pdf ?? false;
+			} else {
+				// New provider or switching presets - default to unchecked
+				forceBase64Checkbox.checked = false;
+			}
+			
 			if (selectedPreset) {
 				nameInput.value = selectedPreset.name;
 				
-				const editingOriginalPreset = index !== undefined && selectedPresetId === currentPresetId;
 				baseUrlInput.value = editingOriginalPreset ? provider.baseUrl : selectedPreset.baseUrl;
 				apiKeyInput.value = editingOriginalPreset ? provider.apiKey : '';
 
@@ -653,11 +679,26 @@ async function showProviderModal(provider: Provider, index?: number) {
 		};
 
 		presetSelect.addEventListener('change', updateVisibility);
+		
+		// Listen for baseUrl and name changes to update force base64 visibility for custom providers
+		const handleCustomProviderInputChange = () => {
+			// Only update visibility for custom providers (no preset selected)
+			if (!presetSelect.value) {
+				const providerType = detectProviderType(baseUrlInput.value, nameInput.value);
+				const showForceBase64 = supportsPdfUrl(providerType);
+				forceBase64Container.style.display = showForceBase64 ? 'block' : 'none';
+			}
+		};
+		baseUrlInput.addEventListener('input', handleCustomProviderInputChange);
+		nameInput.addEventListener('input', handleCustomProviderInputChange);
+		
 		updateVisibility();
 		
 		// Set cleanup function to remove event listeners when modal closes
 		cleanupProviderModal = () => {
 			presetSelect.removeEventListener('change', updateVisibility);
+			baseUrlInput.removeEventListener('input', handleCustomProviderInputChange);
+			nameInput.removeEventListener('input', handleCustomProviderInputChange);
 		};
 	}
 
@@ -705,6 +746,15 @@ async function showProviderModal(provider: Provider, index?: number) {
 			// Use the user-provided baseUrl if it's different from the preset baseUrl
 			updatedProvider.baseUrl = baseUrl !== providerPresetBaseUrl ? baseUrl : providerPresetBaseUrl;
 			updatedProvider.apiKeyRequired = providerPreset.apiKeyRequired !== false;
+		}
+
+		// Only save forceBase64Pdf if the provider supports PDF URLs
+		const finalProviderType = presetId && cachedPresetProviders && cachedPresetProviders[presetId]
+			? detectProviderType(cachedPresetProviders[presetId].baseUrl, cachedPresetProviders[presetId].name)
+			: detectProviderType(baseUrl, name);
+		if (supportsPdfUrl(finalProviderType)) {
+			const forceBase64Checkbox = form.querySelector('[name="forceBase64Pdf"]') as HTMLInputElement;
+			updatedProvider.forceBase64Pdf = forceBase64Checkbox?.checked ?? false;
 		}
 
 		if (index !== undefined) {

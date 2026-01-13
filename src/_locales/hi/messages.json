@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "Is provider ke liye API endpoint URL."
 	},
+	"providerForceBase64": {
+		"message": "PDF एन्कोडिंग को base64 पर मजबूर करें"
+	},
+	"providerForceBase64Description": {
+		"message": "यदि आप ऐसे प्रॉक्सी या कस्टम एंडपॉइंट का उपयोग कर रहे हैं जो URL-आधारित PDF इनपुट का समर्थन नहीं करता है, तो इसे सक्षम करें।"
+	},
 	"providerModelId": {
 		"message": "Model ID"
 	},

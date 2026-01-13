@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "L'URL del punt final de l'API per a aquest proveïdor."
 	},
+	"providerForceBase64": {
+		"message": "Forçar la codificació del PDF en base64"
+	},
+	"providerForceBase64Description": {
+		"message": "Activa-ho si utilitzes un proxy o un endpoint personalitzat que no admeti l'entrada de PDF mitjançant URL."
+	},
 	"providerModelId": {
 		"message": "ID del model"
 	},

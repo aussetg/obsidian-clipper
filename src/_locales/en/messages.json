@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "The API endpoint URL for this provider."
 	},
+	"providerForceBase64": {
+		"message": "Force base64 PDF encoding"
+	},
+	"providerForceBase64Description": {
+		"message": "Enable if using a proxy or custom endpoint that doesn't support URL-based PDF input."
+	},
 	"providerModelId": {
 		"message": "Model ID"
 	},

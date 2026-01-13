@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "URL نقطة النهاية لل API لهذا المزود."
 	},
+	"providerForceBase64": {
+		"message": "فرض ترميز PDF بصيغة base64"
+	},
+	"providerForceBase64Description": {
+		"message": "فعّل هذا الخيار إذا كنت تستخدم وسيطًا (proxy) أو نقطة نهاية مخصصة لا تدعم إدخال PDF عن طريق عنوان URL."
+	},
 	"providerModelId": {
 		"message": "معرف النموذج"
 	},

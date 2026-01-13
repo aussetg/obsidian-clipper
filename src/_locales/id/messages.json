@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "URL endpoint API untuk penyedia ini."
 	},
+	"providerForceBase64": {
+		"message": "Paksa pengkodean PDF ke base64"
+	},
+	"providerForceBase64Description": {
+		"message": "Aktifkan jika menggunakan proxy atau endpoint kustom yang tidak mendukung input PDF berbasis URL."
+	},
 	"providerModelId": {
 		"message": "ID model"
 	},

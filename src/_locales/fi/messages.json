@@ -687,6 +687,12 @@
 			}
 		}
 	},
+	"providerForceBase64": {
+		"message": "Pakota PDF:n base64-koodaus"
+	},
+	"providerForceBase64Description": {
+		"message": "Ota käyttöön, jos käytät välityspalvelinta tai mukautettua päätepistettä, joka ei tue URL-pohjaista PDF-syötettä."
+	},
 	"providerModelId": {
 		"message": "Mallin tunnus"
 	},

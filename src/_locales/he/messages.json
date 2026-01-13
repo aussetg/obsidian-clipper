@@ -671,6 +671,12 @@
 	"providerBaseUrlDescription": {
 		"message": "כתובת URL של נקודת הסיום של API עבור ספק זה."
 	},
+	"providerForceBase64": {
+		"message": "כפה קידוד PDF ב-base64"
+	},
+	"providerForceBase64Description": {
+		"message": "הפעל אם אתה משתמש בפרוקסי או בנקודת קצה מותאמת שאינה תומכת בקלט PDF מבוסס URL."
+	},
 	"providerModelId": {
 		"message": "מזהה דגם"
 	},

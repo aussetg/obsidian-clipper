@@ -671,6 +671,12 @@
 	"providerBaseUrlDescription": {
 		"message": "URL koncového bodu API pro tohoto poskytovatele."
 	},
+	"providerForceBase64": {
+		"message": "Vynutit kódování PDF do base64"
+	},
+	"providerForceBase64Description": {
+		"message": "Povolte, pokud používáte proxy nebo vlastní endpoint, který nepodporuje zadání PDF pomocí URL."
+	},
 	"providerModelId": {
 		"message": "ID modelu"
 	},

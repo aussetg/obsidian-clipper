@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "Die API-Endpunkt-URL für diesen Anbieter."
 	},
+	"providerForceBase64": {
+		"message": "Base64-Codierung für PDF erzwingen"
+	},
+	"providerForceBase64Description": {
+		"message": "Aktivieren, wenn ein Proxy oder benutzerdefinierter Endpunkt verwendet wird, der keine URL-basierte PDF-Eingabe unterstützt."
+	},
 	"providerModelId": {
 		"message": "Modell-ID"
 	},

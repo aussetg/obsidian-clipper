@@ -151,6 +151,33 @@ function detectApiTypeFromPath(baseUrl: string): SupportedProvider | null {
 }
 
 /**
+ * Check if a provider type supports passing PDF URLs directly to the AI
+ * (vs requiring base64 encoding).
+ * 
+ * Providers that support URL-based PDFs:
+ * - Anthropic: Yes (via document.source.type = "url")
+ * - OpenAI Responses API: Yes (via input_file.file_url)
+ * - OpenAI Chat Completions: No (throws UnsupportedFunctionalityError)
+ * - Google: No (requires base64 or Files API upload)
+ * - OpenAI-compatible: No (uses Chat Completions API)
+ * - Azure: No (uses Chat Completions API format)
+ */
+export function supportsPdfUrl(providerType: SupportedProvider): boolean {
+	// Anthropic supports URL-based PDFs via document.source.type = "url"
+	if (providerType === 'anthropic') return true;
+	
+	// OpenAI Responses API supports URL-based PDFs via input_file.file_url
+	// Note: 'openai' type uses Responses API, 'openai-compatible' uses Chat Completions
+	if (providerType === 'openai' || providerType === 'openai-responses') return true;
+	
+	// These providers require base64:
+	// - 'google': Only supports base64 or Files API upload
+	// - 'openai-compatible': Uses Chat Completions API (no URL support)
+	// - 'azure': Uses Chat Completions API format
+	return false;
+}
+
+/**
  * Detect provider type from URL and name
  * 
  * Detection priority:

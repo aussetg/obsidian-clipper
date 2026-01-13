@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "URL punktu końcowego API dla tego operatora."
 	},
+	"providerForceBase64": {
+		"message": "Wymuś kodowanie PDF w base64"
+	},
+	"providerForceBase64Description": {
+		"message": "Włącz, jeśli używasz proxy lub niestandardowego punktu końcowego, który nie obsługuje wprowadzania plików PDF za pomocą adresu URL."
+	},
 	"providerModelId": {
 		"message": "ID modelu"
 	},

@@ -679,6 +679,12 @@
 	"providerBaseUrlDescription": {
 		"message": "このプロバイダーのAPIエンドポイントURL。"
 	},
+	"providerForceBase64": {
+		"message": "PDF を強制的に base64 エンコード"
+	},
+	"providerForceBase64Description": {
+		"message": "URL ベースの PDF 入力をサポートしないプロキシやカスタムエンドポイントを使用している場合に有効にしてください。"
+	},
 	"providerModelId": {
 		"message": "モデルID"
 	},
