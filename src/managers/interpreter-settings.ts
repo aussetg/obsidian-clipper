@@ -76,7 +76,7 @@ interface ProviderPresetsFile {
 	[key: string]: ProviderPresetData | string | undefined;
 }
 
-const PROVIDERS_URL = 'https://raw.githubusercontent.com/obsidianmd/obsidian-clipper/refs/heads/main/providers.json';
+const PROVIDERS_URL = 'https://raw.githubusercontent.com/aussetg/obsidian-clipper/refs/heads/main/providers.json';
 const PRESET_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 const PRESET_RETRY_DELAY = 60 * 1000; // 1 minute
 const LOCAL_STORAGE_KEY = 'provider_presets';
